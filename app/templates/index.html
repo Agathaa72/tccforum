@@ -50,6 +50,42 @@
 		left: 1%;
 	}
 
+	.btn, .form-control{
+		border-radius: 1px;
+	}
+
+	.row{
+		width: 90%;
+		position: relative;
+		left: 5%;
+		display: flex;
+	}
+
+	.forum{
+		margin-top: 30px;
+		width: 50%;
+		height: 200px;
+		text-align: center;
+		padding: 10px;
+		border: 1px solid #c7c8c9;
+		background: #8c52ff;
+		color: white;
+		font-family: "Poppins", sans-serif;
+	}
+
+	@media (max-width: 1000px){
+		.forum{
+			position: relative;
+			left: 7.5%;
+			width: 90%;
+			height: 150px;
+		}
+
+		.row{
+			display: block;
+		}
+	}
+
 </style>
 
 <body>
@@ -75,6 +111,30 @@
 	    </div>
 	  </div>
 	</nav>
+
+	<div class="row">
+		<div class="forum mb-2">
+			<img src="...">
+			<h1>Forúm</h1>
+			<p>Pergunte ou ajude outras pessoas respondendo !</p>
+		</div>
+		<div class="forum mb-2">
+			<img src="...">
+			<h1>Jogos</h1>
+			<p>Aprenda e teste conhecimentos com alguns jogos !</p>
+		</div>
+		<div class="forum mb-2">
+			<img src="...">
+			<h1>Aulas</h1>
+			<p>Assista aulas gravadas ou ao vivo !</p>
+		</div>
+		<div class="forum mb-2">
+			<img src="...">
+			<h1>Chat</h1>
+			<p>Converse com outras pessoas ao vivo!</p>
+		</div>
+
+	</div>
 
 </body>
 </html>

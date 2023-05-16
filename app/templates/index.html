@@ -6,6 +6,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 	<link rel="icon" type="image/x-icon" href="static/icon1.ico">
 	<title>KnowZone</title>
 </head>
@@ -59,6 +60,7 @@
 		position: relative;
 		left: 5%;
 		display: flex;
+		background: white;
 	}
 
 	.forum{
@@ -71,6 +73,10 @@
 		background: #8c52ff;
 		color: white;
 		font-family: "Poppins", sans-serif;
+	}
+
+	i{
+		font-size: 2em;
 	}
 
 	@media (max-width: 1000px){
@@ -103,6 +109,9 @@
 	        <li class="nav-item">
 	          <a class="nav-link" href="#" aria-current="page">Perfil</a>
 	        </li>
+	        <li class="nav-item">
+	          <a class="nav-link" aria-current="page" href="#">Ajuda</a>
+	        </li>
 	      </ul>
 	      <form class="d-flex" role="search">
 	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
@@ -114,22 +123,22 @@
 
 	<div class="row">
 		<div class="forum mb-2">
-			<img src="...">
+			<i class="fab fa-discourse" ></i>
 			<h1>Forúm</h1>
 			<p>Pergunte ou ajude outras pessoas respondendo !</p>
 		</div>
 		<div class="forum mb-2">
-			<img src="...">
+			<i class="fas fa-gamepad"></i>
 			<h1>Jogos</h1>
 			<p>Aprenda e teste conhecimentos com alguns jogos !</p>
 		</div>
 		<div class="forum mb-2">
-			<img src="...">
+			<i class="fas fa-chalkboard"></i>
 			<h1>Aulas</h1>
 			<p>Assista aulas gravadas ou ao vivo !</p>
 		</div>
 		<div class="forum mb-2">
-			<img src="...">
+			<i class="fas fa-comments"></i>
 			<h1>Chat</h1>
 			<p>Converse com outras pessoas ao vivo!</p>
 		</div>

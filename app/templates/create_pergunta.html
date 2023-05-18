@@ -20,6 +20,10 @@
 		padding: 0;
 	}
 
+	body{
+		font-family: "Poppins", sans-serif;
+	}
+
 	.navbar{
 		background: #8c52ff;
 		font-family: "Poppins", sans-serif;
@@ -48,21 +52,29 @@
 	}
 
 	.perguntas{
-		display: flex;
+		display: block;
 	}
 
-	.pergunta {
-		width: 60%;
-		margin-left: 10px;
+	.p{
+		width: 70%;
+		position: relative;
+		left: 2%;
 		padding: 30px;
 		margin-top: 10px;
-		background: red;
+		background: #f2f2f2;
 	}
 
-	.ia{
-		padding: 30px;
-		background: red;
+	.pergunta{
 		margin-top: 10px;
+		position: relative;
+		left: 2%;
+		width: 70%;
+		border: 1px solid #8c52ff;
+		padding: 20px;
+	}
+
+	textarea {
+		height: 200px;
 	}
 
 	.btn, .form-control{
@@ -72,6 +84,11 @@
 	@media (max-width: 1000px){
 		.perguntas{
 			display: block;
+		}
+
+		.p{
+			width: 90%;
+			left: 5%;
 		}
 	}
 
@@ -104,12 +121,32 @@
 	  </div>
 	</nav>
 	<div class="perguntas">
-		<div class="pergunta">
-			<h1>Faça sua pergunta</h1>
+		<div>
+			<div class="p">
+				<h1>Faça sua pergunta</h1>
+				<p>Teve dúvida? Não deixe pra depois, pergunte agora !</p>
+
+			</div>
+			<div class="pergunta">
+				<form method="POST" action="{{url_for('signup')}}">
+					<div class="mb-3">
+	    				<label for="exampleInputEmail1" class="form-label">Título:</label>
+	    				<input type="text" class="form-control" name="title" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+	  				</div>
+	  				<div class="mb-3">
+	  					<label for="exampleInputEmail1" class="form-label">Conteúdo:</label>
+	  					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+	  				</div>
+	  				<select class="form-select" aria-label="Default select example">
+  						<option selected>Selecione a matéria</option>
+  						<option value="1">One</option>
+  						<option value="2">Two</option>
+  						<option value="3">Three</option>
+					</select>
+	  			</form>
+			</div>
 		</div>
-		<div class="ia">
-			<h1>Pergunte ao ChatGPT</h1>
-		</div>
+
 	</div>
 </body>
 </html>

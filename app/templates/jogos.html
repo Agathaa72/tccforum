@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
 	<link rel="icon" type="image/x-icon" href="static/icon1.ico">
-	<title>KnowZone | Pergunte agora</title>
+	<title>KnowZone | Forum</title>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
@@ -51,52 +49,42 @@
 		color: #8c52ff;
 	}
 
-	.perguntas{
-		display: block;
-	}
-
-	.p{
-		width: 70%;
+	h1{
+		font-size: 2.5rem;
 		position: relative;
-		left: 2%;
-		padding: 30px;
-		margin-top: 10px;
-		background: #f2f2f2;
-	}
-
-	.pergunta{
-		margin-top: 10px;
-		position: relative;
-		left: 2%;
-		width: 70%;
-		border: 1px solid #8c52ff;
-		padding: 20px;
-	}
-
-	textarea {
-		height: 200px;
+		left: 1%;
 	}
 
 	.btn, .form-control{
 		border-radius: 1px;
 	}
 
-	
+	.btn{
+		background: #8c52ff;
 
-	@media (max-width: 1000px){
-		.perguntas{
-			display: block;
-		}
+	}
 
-		.p{
-			width: 90%;
-			left: 5%;
-		}
+	.forum{
+		width: 70%;
+		position: relative;
+		left: 2%;
+	}
 
-		.pergunta{
-			width: 90%;
-			left: 5%;
-		}
+	.perguntas{
+		width: 100%;
+		padding: 30px;
+		margin-top: 10px;
+		background: #f2f2f2;
+	}
+
+	.pergunta{
+		border: 1px solid #8c52ff;
+		margin-top: 15px;
+		padding: 20px;
+	}
+
+	i{
+		color: red;
 	}
 
 </style>
@@ -116,9 +104,6 @@
 	        <li class="nav-item">
 	          <a class="nav-link" href="#" aria-current="page">Perfil</a>
 	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" aria-current="page" href="#">Ajuda</a>
-	        </li>
 	      </ul>
 	      <form class="d-flex" role="search">
 	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
@@ -127,34 +112,17 @@
 	    </div>
 	  </div>
 	</nav>
-	<div class="perguntas">
-		<div>
-			<div class="p">
-				<h1>Faça sua pergunta</h1>
-				<p>Teve dúvida? Não deixe pra depois, pergunte agora !</p>
 
-			</div>
-			<div class="pergunta">
-				<form method="POST" action="{{url_for('signup')}}">
-					<div class="mb-3">
-	    				<label for="exampleInputEmail1" class="form-label">Título:</label>
-	    				<input type="text" class="form-control" name="title" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-	  				</div>
-	  				<div class="mb-3">
-	  					<label for="exampleInputEmail1" class="form-label">Conteúdo:</label>
-	  					<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-	  				</div>
-	  				<select class="form-select" aria-label="Default select example">
-  						<option selected>Selecione a matéria</option>
-  						<option value="1">One</option>
-  						<option value="2">Two</option>
-  						<option value="3">Three</option>
-					</select>
-	  			</form>
+	<div class="forum">
+		<div class="perguntas">
+			<h1>Jogos</h1>
+		</div>
+		<div class="relacionadas">
+			<div class="chat">
+				
 			</div>
 		</div>
-
 	</div>
-	
+
 </body>
 </html>

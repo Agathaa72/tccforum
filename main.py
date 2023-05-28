@@ -20,6 +20,12 @@ from app import app, models
 def inicio():
 	return render_template("site.html") 
 
+# Passar o comando de pesquisa	
+
+@app.route("/lobby")
+def index():
+	return render_template("index.html") 
+
 
 @app.route("/nao_encontrada")
 def error():
@@ -37,11 +43,15 @@ def opcao_conta():
 def login():
 	return render_template("login.html")
 
-@app.route("/nova_conta")
-def signup():
+
+@app.route("/nova_conta/estudante")
+def signup_estudante():
 	return render_template("signup.html")
 
 
+@app.route("/nova_conta/mentor")
+def signup_mentor():
+	return render_template("signup.html")
 
 # Conta
 
@@ -87,21 +97,6 @@ def ver_curso(id):
 @app.route("/cursos/novo")
 def criar_curso():
 	return render_template("create_curso.html")
-
-
-# Jogos
-
-@app.route("/jogos")
-def jogos():
-	return render_template("jogos.html")
-
-@app.route("/jogos/<id>")
-def ver_jogosos(id):
-	return render_template("ver_jogo.html")
-
-@app.route("/jogos/novo")
-def create_jogos():
-	return render_template("create_jogo.html")
 
 
 # Comunidade

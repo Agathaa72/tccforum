@@ -9,7 +9,8 @@
 
 # O código principal
 
-from flask import flask, render_template
+from flask import flask, flash, render_template, request, redirect, url_for, session
+from flask_login import login_user, logout_user, login_required
 from app import app, models
 
 
@@ -34,23 +35,91 @@ def error():
 
 # Area dos formulários de login e sign
 
-@app.route("/options")
+@app.route("/options", methods=["GET", "POST"])
 def opcao_conta():
+	if request.method == "POST":
+
+		 if request.form.get("study") == "Estudante":
+		 	return redirect(url_for("signup_estudante"))
+
+		 elif request.form.get("admin") == "Admin":
+		 	return redirect(url_for("signup_mentor"))
+
 	return render_template("opcao.html")
 
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+	if request.method == "POST":
+
+		pass
+
 	return render_template("login.html")
 
 
-@app.route("/nova_conta/estudante")
+@app.route("/nova_conta/estudante", methods=["GET", "POST"])
 def signup_estudante():
+	if request.method == "POST":
+
+		session["nome"] = request.form["nome"]
+              
+        nome = session["nome"]
+        em = request.form["email"]
+        senha = request.form["senha"]
+
+        user = User(nome=nome, email=em, senha=senha, admin=False,
+        	estudante=True)
+         
+
+        nser = User.query.filter_by(nome=nome).first()
+        eser = User.query.filter_by(email=em).first()
+
+        if nser or eser is not None:
+            flash('Nome ou email de usuário existente', 'error')
+                  
+        else:
+            db.session.add(user)
+            db.session.add(pacote)
+            db.session.commit()
+
+            login_user(user)
+
+            return redirect(url_for("index"))
+
+
 	return render_template("signup.html")
 
 
-@app.route("/nova_conta/mentor")
+@app.route("/nova_conta/mentor", methods=["GET", "POST"])
 def signup_mentor():
+	if request.method == "POST":
+
+		session["nome"] = request.form["nome"]
+              
+        nome = session["nome"]
+        em = request.form["email"]
+        senha = request.form["senha"]
+
+        user = User(nome=nome, email=em, senha=senha, admin=False,
+        	estudante=True)
+         
+
+        nser = User.query.filter_by(nome=nome).first()
+        eser = User.query.filter_by(email=em).first()
+
+        if nser or eser is not None:
+            flash('Nome ou email de usuário existente', 'error')
+                  
+        else:
+            db.session.add(user)
+            db.session.add(pacote)
+            db.session.commit()
+
+            login_user(user)
+
+            return redirect(url_for("index"))
+
+
 	return render_template("signup.html")
 
 # Conta

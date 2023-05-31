@@ -7,9 +7,9 @@ from app import db, login
 
 @login.user_loader
 def get_user(user_id):
-    user= User.query.filter_by(id=user_id).first()
-    if user:
-        return user
+    us= user.query.filter_by(id=user_id).first()
+    if us:
+        return us
     return None
 
 class user(db.Model, UserMixin):

@@ -71,8 +71,8 @@
 	}
 
 	.bio{
-		width: 80%;
-		padding: 20px;
+		width: 15%;
+		padding: 15px;
 		border-radius: 8px;
 		border: 1px solid gray;
 		background: #f2f2f2;
@@ -93,10 +93,7 @@
 	          <a class="nav-link" aria-current="page" href="#">Inicio</a>
 	        </li>
 	        <li class="nav-item">
-	          <a class="nav-link" href="#" aria-current="page">Perfil</a>
-	        </li>
-	        <li class="nav-item">
-	          <a class="nav-link" aria-current="page" href="#">Ajuda</a>
+	          <a class="nav-link" href="/conta" aria-current="page">Perfil</a>
 	        </li>
 	      </ul>
 	      <form class="d-flex" role="search">
@@ -114,10 +111,23 @@
 			<button class="btn btn-danger">Excluir</button>
 		</div>
 		<img src="..." height="120" width="120">
-		<h2>Olá, { nome }</h2>
-		<p>Sobre:</p>
+		<h2>Olá, {{ nome }}</h2>
+		<p>Cargo:</p>
 		<div class="bio">
-			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+
+			{% if us.estudante == False %}
+
+			<h4>Admin</h4>
+
+			{% else %}
+
+			<h4>Estudante</h4>
+
+			{% endif %}
+
+			
+
+			
 		</div>
 	</div>
 </body>

@@ -56,18 +56,16 @@ def login():
        em = request.form["email"]
        senha = request.form["senha"]
 
-       eser = user.query.filter_by(email=em).first()
-       
-       sser = user.query.filter_by(senha=senha).first()
-
-       if eser is None and sser is None:
+       us = user.query.filter_by(email=em, senha=senha).first()
+                       
+       if us is None:
             flash('Usuário inexistente ou dados incorretos', 'error')
                   
        else:
 
-           session["nome"] = eser.nome
+           session["nome"] = us.nome
 
-           login_user(user)
+           login_user(us)
 
            return redirect(url_for("index"))
 
@@ -84,21 +82,21 @@ def signup_estudante():
        em = request.form["email"]
        senha = request.form["senha"]
 
-       user = user(nome=nome, email=em, senha=senha, admin=False,
+       us = user(nome=nome, email=em, senha=senha, admin=False,
         	estudante=True)
          
 
-       nser = user.query.filter_by(nome=nome).first()
-       eser = user.query.filter_by(email=em).first()
+       nser = us.query.filter_by(nome=nome).first()
+       eser = us.query.filter_by(email=em).first()
 
        if nser or eser is not None:
             flash('Nome ou email de usuário existente', 'error')
                   
        else:
-           db.session.add(user)
+           db.session.add(us)
            db.session.commit()
 
-           login_user(user)
+           login_user(us)
 
            return redirect(url_for("index"))
 
@@ -116,21 +114,21 @@ def signup_mentor():
        em = request.form["email"]
        senha = request.form["senha"]
 
-       user = user(nome=nome, email=em, senha=senha, admin=True,
+       us = user(nome=nome, email=em, senha=senha, admin=True,
         	estudante=False)
          
 
-       nser = user.query.filter_by(nome=nome).first()
-       eser = user.query.filter_by(email=em).first()
+       nser = us.query.filter_by(nome=nome).first()
+       eser = us.query.filter_by(email=em).first()
 
        if nser or eser is not None:
             flash('Nome ou email de usuário existente', 'error')
                   
        else:
-         db.session.add(user)
+         db.session.add(us)
          db.session.commit()
 
-         login_user(user)
+         login_user(us)
 
          return redirect(url_for("index"))
 
@@ -145,12 +143,24 @@ def ver_conta(id):
 
 
 @app.route("/conta")
+@login_required
 def conta():
-    return render_template("conta.html")
+    nome=""
+    if "nome" in session:
+        nome = session["nome"]
+
+        us = user.query.filter_by(nome=nome).first()
+    
+    return render_template("conta.html", nome=nome, us=us)
 
 @app.route("/logout")
+@login_required
 def logout():
-    pass
+    session.pop("nome", None)
+    logout_user()
+
+    
+    return redirect(url_for("login"))
 
 
 # Forum
@@ -164,6 +174,7 @@ def questao(id):
     return render_template("ver_pergunta.html")
 
 @app.route("/questao/novo")
+@login_required
 def criar_questao():
     return render_template("create_pergunta.html")
 
@@ -172,13 +183,14 @@ def criar_questao():
 
 @app.route("/cursos")
 def curso():
-    return render_template("curso.html")
+    return render_template("cursos.html")
 
 @app.route("/cursos/<id>")
 def ver_curso(id):
     return render_template("ver_curso.html")
 
 @app.route("/cursos/novo")
+@login_required
 def criar_curso():
     return render_template("create_curso.html")
 
@@ -191,9 +203,10 @@ def grupos():
 
 @app.route("/grupos/<id>")
 def ver_grupos(id):
-    return render_template("ver_grupo.html")
+    return render_template("comunidade.html")
 
 @app.route("/grupos/novo")
+@login_required
 def create_grupos():
     return render_template("create_grupo.html")
 
@@ -202,4 +215,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-	app.run(debug=True, port=5003)
+    app.run(debug=True, port=5014)

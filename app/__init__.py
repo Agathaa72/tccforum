@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 # Banco de dados
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:META100K@localhost/knowzone"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:META100Kk#@localhost/knowzone"
 app.config["SECRET_KEY"] = "wZc3w7Am3hPMaFp3jqrhxASdRBHcydpEHiKaAp7xgtp"
 
 # Variaveis de login manager, db e oauth

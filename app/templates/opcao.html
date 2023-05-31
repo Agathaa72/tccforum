@@ -47,8 +47,13 @@
 	}
 
 
+	a{
+		color: white;
+		text-decoration: none;
+	}
+
 	a:hover{
-		color: #198754;
+		color: white;
 	}
 
 	.btn{
@@ -107,8 +112,10 @@
 		<div class="login">
 			<p>Escolha a sua opção:</p>
 
-			<button class="btn"><i class="fas fa-user-graduate"></i>Estudante</button>
-			<button class="btn"><i class="fas fa-chalkboard-teacher"></i>Mentor</button>
+			<form method="POST", action="{{url_for('opcao_conta')}}">
+				<button class="btn"><a href="/nova_conta/estudante"><i class="fas fa-user-graduate" name="study" value="Estudante"></i>Estudante</button></a>
+				<button class="btn"><a href="/nova_conta/mentor"><i class="fas fa-chalkboard-teacher" name="admin" value="Mentor"></i>Mentor</button></a>
+			</form>
 		</div>
 	</div>
 

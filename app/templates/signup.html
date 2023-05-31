@@ -49,6 +49,12 @@
 
 	}
 
+	.campos .btn{
+		width: 100%;
+		position: relative;
+		left: 0%;
+	}
+
 	.buttons{
 		width: 50%;
 		padding: 30px;
@@ -162,10 +168,10 @@
 		</div>
 		<div class="login">
 			<div class="campos">
-				<form method="POST" action="{{url_for('signup')}}">
+				<form method="POST" action="{{url_for('signup_estudante')}}">
 					<div class="mb-3">
 	    				<label for="exampleInputEmail1" class="form-label">Nome:</label>
-	    				<input type="email" class="form-control" name="email" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+	    				<input type="text" class="form-control" name="nome" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
 	  				</div>
 	  				<div class="mb-3">
 	    				<label for="exampleInputEmail1" class="form-label">Email:</label>
@@ -175,12 +181,10 @@
 	    				<label for="exampleInputEmail1" class="form-label">Senha:</label>
 	    				<input type="password" class="form-control" name="senha" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
 	  				</div>
+	  				<button type="submit" class="btn btn-primary">Criar</button>
 	  			</form>
 			</div>
 			<div class="buttons">
-				<form>
-	  				<button type="submit" class="btn btn-primary">Criar</button>
-				</form>
 				<div class="or" style="display: flex;">
 					<hr>
 					<p>ou</p>
@@ -189,7 +193,7 @@
 				<form method="post">
 					<button id="goog" class="btn btn-primary" name="goog" value="Google">Criar com Google <span class="fab fa-google"></button>
 				</form>
-				<p>Já é membro? <a href="/signup">Entre aqui</a></p>
+				<p>Já é membro? <a href="/login">Entre aqui</a></p>
 			</div>
 		</div>
 	</div>

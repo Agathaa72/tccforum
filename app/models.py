@@ -12,7 +12,7 @@ def get_user(user_id):
         return user
     return None
 
-class User(db.Model, UserMixin):
+class user(db.Model, UserMixin):
     __tablename__  = "user"
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(50))

@@ -184,7 +184,7 @@ def conta():
                 item = user.query.filter_by(nome=nome).first()
                 
 
-                if us == None:
+                if item == None:
                 
                     item.nome = nome_novo
                     
@@ -241,7 +241,7 @@ def criar_questao():
        db.session.add(perg)
        db.session.commit()
 
-       return redirect(url_for("index"))
+       return redirect(url_for("forum"))
 
     
     return render_template("create_pergunta.html")
@@ -250,11 +250,45 @@ def criar_questao():
 # Cursos
 
 @app.route("/cursos")
-def curso():
-    return render_template("cursos.html")
+def cursos():
+
+    titles = []
+    conts = []
+
+    titulo = curso.query.filter_by(id=id).with_entities(curso.titulo_curso).all()
+    conteudo = curso.query.filter_by(id=id).with_entities(curso.conteudo_curso).all()
+
+    # Transformando uma tupla em strings
+
+    for i in titulo:
+
+        ti = "".join(map(str, i))
+                    
+        titles.append(ti)
+
+    for p in conteudo:
+
+        ro = "".join(map(str, p))
+                    
+        conts.append(ro)
+    
+    
+    return render_template("cursos.html", titles=titles, conts=conts)
 
 @app.route("/cursos/<id>")
 def ver_curso(id):
+    cur = curso.query.filter_by(id=id).first()
+
+    if cur is None:
+
+        return redirect(url_for("error"))
+
+    else:
+        curso_nome = cur.titulo_curso
+        curso_cont = cur.conteudo_curso
+        criador = cur.nome
+
+        
     return render_template("ver_curso.html")
 
 @app.route("/cursos/novo", methods=["GET", "POST"])
@@ -267,14 +301,15 @@ def criar_curso():
        titulo = request.form["title"]
        conteudo = request.form["conteudo"]
 
-       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+       curs = curso(titulo_curso=titulo, conteudo_curso=conteudo, nome=nome)
         
                   
        
-       db.session.add(perg)
+       db.session.add(curs)
        db.session.commit()
 
-       return redirect(url_for("index"))
+       return redirect(url_for("cursos"))
+    
     return render_template("create_curso.html")
 
 
@@ -286,6 +321,17 @@ def grupos():
 
 @app.route("/grupos/<id>")
 def ver_grupos(id):
+    cur = curso.query.filter_by(id=id).first()
+
+    if cur is None:
+
+        return redirect(url_for("error"))
+
+    else:
+        curso_nome = cur.titulo_curso
+        curso_cont = cur.conteudo_curso
+        criador = cur.nome
+    
     return render_template("comunidade.html")
 
 @app.route("/grupos/novo", methods=["GET", "POST"])
@@ -296,16 +342,16 @@ def create_grupos():
     if request.method == "POST":
               
        titulo = request.form["title"]
-       conteudo = request.form["conteudo"]
+       descricao = request.form["conteudo"]
 
-       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+       grupo = grupo(titulo=titulo, descricao=descricao, nome=nome)
         
                   
        
-       db.session.add(perg)
+       db.session.add(grupo)
        db.session.commit()
 
-       return redirect(url_for("index"))
+       return redirect(url_for("grupos"))
     return render_template("create_grupo.html")
 
 
@@ -313,4 +359,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5014)
+    app.run(debug=True, port=5006)

@@ -38,3 +38,14 @@ class pergunta(db.Model):
         self.titulo = titulo
         self.conteudo = conteudo
         self.nome = nome
+
+class curso(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo_curso = db.Column(db.String(200))
+    conteudo_curso = db.Column(db.Text)
+    nome = db.Column(db.String(50))
+
+    def __init__(self, titulo_curso, conteudo_curso, nome):
+        self.titulo_curso = titulo_curso
+        self.conteudo_curso = conteudo_curso
+        self.nome = nome

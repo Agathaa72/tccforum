@@ -27,3 +27,14 @@ class user(db.Model, UserMixin):
         self.senha = senha
         self.admin = admin
         self.estudante = estudante
+
+class pergunta(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(200))
+    conteudo = db.Column(db.Text)
+    nome = db.Column(db.String(50))
+
+    def __init__(self, titulo, conteudo, nome):
+        self.titulo = titulo
+        self.conteudo = conteudo
+        self.nome = nome

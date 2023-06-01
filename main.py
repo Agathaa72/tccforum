@@ -139,10 +139,21 @@ def signup_mentor():
 
 @app.route("/user/<id>")
 def ver_conta(id):
-    return render_template("ver_perfil.html")
+
+    us = user.query.filter_by(id=id).first()
+
+    if us is None:
+
+        return redirect(url_for("error"))
+
+    else:
+        nome = us.nome
+        
+    
+    return render_template("ver_perfil.html", nome=nome, us=us)
 
 
-@app.route("/conta")
+@app.route("/conta", methods=["GET", "POST"])
 @login_required
 def conta():
     nome=""
@@ -150,8 +161,47 @@ def conta():
         nome = session["nome"]
 
         us = user.query.filter_by(nome=nome).first()
+
+        nome = us.nome
+        email = us.email
+        senha = us.senha
+
+
+        if request.method == "POST":
+
+            if request.form.get("remove") == "Excluir":
+                item = user.query.filter_by(nome=nome).first()
+                db.session.delete(item)
+                db.session.commit()
+
+                return redirect("/signup")
+
+            elif request.form.get("edit") == "Editar":
+                nome_novo = request.form["nome"]
+                email_novo = request.form["email"]
+                senha_nova = request.form["senha"]
+                
+                item = user.query.filter_by(nome=nome).first()
+                
+
+                if us == None:
+                
+                    item.nome = nome_novo
+                    
+                    item.email = email_novo
+                    item.senha = senha_nova
+
+                    
+                    session["nome"] = nome_novo
+                    
+                    db.session.commit()
+
+                else:
+                    flash('Nome ou email de usuário existentes', 'error')
+
+                    return redirect("/inicio")
     
-    return render_template("conta.html", nome=nome, us=us)
+    return render_template("conta.html", nome=nome, us=us, email=email, senha=senha)
 
 @app.route("/logout")
 @login_required
@@ -173,9 +223,27 @@ def forum():
 def questao(id):
     return render_template("ver_pergunta.html")
 
-@app.route("/questao/novo")
+@app.route("/questao/novo", methods=["GET", "POST"])
 @login_required
 def criar_questao():
+
+    nome = session["nome"]
+    
+    if request.method == "POST":
+              
+       titulo = request.form["title"]
+       conteudo = request.form["conteudo"]
+
+       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+        
+                  
+       
+       db.session.add(perg)
+       db.session.commit()
+
+       return redirect(url_for("index"))
+
+    
     return render_template("create_pergunta.html")
 
 
@@ -189,9 +257,24 @@ def curso():
 def ver_curso(id):
     return render_template("ver_curso.html")
 
-@app.route("/cursos/novo")
+@app.route("/cursos/novo", methods=["GET", "POST"])
 @login_required
 def criar_curso():
+    nome = session["nome"]
+    
+    if request.method == "POST":
+              
+       titulo = request.form["title"]
+       conteudo = request.form["conteudo"]
+
+       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+        
+                  
+       
+       db.session.add(perg)
+       db.session.commit()
+
+       return redirect(url_for("index"))
     return render_template("create_curso.html")
 
 
@@ -205,9 +288,24 @@ def grupos():
 def ver_grupos(id):
     return render_template("comunidade.html")
 
-@app.route("/grupos/novo")
+@app.route("/grupos/novo", methods=["GET", "POST"])
 @login_required
 def create_grupos():
+    nome = session["nome"]
+    
+    if request.method == "POST":
+              
+       titulo = request.form["title"]
+       conteudo = request.form["conteudo"]
+
+       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+        
+                  
+       
+       db.session.add(perg)
+       db.session.commit()
+
+       return redirect(url_for("index"))
     return render_template("create_grupo.html")
 
 

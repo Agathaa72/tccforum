@@ -78,6 +78,96 @@
 		background: #f2f2f2;
 	}
 
+	.open-button{
+	  font-weight: bold;
+	  outline: none;
+	  border: none;
+	  font-size: 15px;
+	  background: #f0f1f2;
+	}
+
+	.form-popup {
+	  display: none;
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  -ms-transform: translate(-50%, -50%);
+	  transform: translate(-50%, -50%);
+	  align-items: center;
+	  /*border: 3px solid #f1f1f1;*/
+	  z-index: 9;
+	  background: white;
+	  color: #121212;
+	  height: 70%;
+	  width: 50%;
+	  box-shadow: 2px 2px 2px 550px rgba(0, 0, 0, 0.2);
+
+
+	}
+
+	.form-esc {
+	  display: none;
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  -ms-transform: translate(-50%, -50%);
+	  transform: translate(-50%, -50%);
+	  align-items: center;
+	  /*border: 3px solid #f1f1f1;*/
+	  z-index: 9;
+	  background: white;
+	  color: #121212;
+	  height: 60%;
+	  width: 50%;
+	  box-shadow: 2px 2px 2px 550px rgba(0, 0, 0, 0.2);
+	  padding: 20px;
+	  text-align: center;
+
+	}
+
+	.form-esc h2{
+	  font-size: 2rem;
+	  position: relative;
+	  bottom: 40px;
+	  margin-top: 50px;
+	}
+
+	.form-popup h1{
+	  font-size: 2rem;
+	  position: relative;
+	  bottom: 40px;
+	  margin-top: 50px;
+	}
+
+	.cancel{
+	  border:none;
+	  outline: none;
+	  background: white;
+	  color: #121212;
+	  font-size: 2rem;
+	  position: relative;
+	  top: 5px;
+	  left: 20px;
+	}
+
+	.form-popup .btn, .form-popup label, .form-popup h1, .form-control{
+		border-radius: 1px;
+		width: 90%;
+		position: relative;
+		left: 5%;
+	}
+
+	.form{
+		margin-top: 10px;
+	}
+
+	@media (max-width: 1000px){
+		.form-popup{
+			width: 80%;
+			height: 80%;
+		}
+	}
+
 </style>
 
 <body>
@@ -106,11 +196,9 @@
 
 	<div class="perfil">
 		<div class="btns">
-			<form>
-				<button class="btn btn-primary">Editar</button>
-				<a href="/logout"><button class="btn btn-danger">Sair</button></a>
-				<button class="btn btn-danger" name="remove" value="Excluir">Excluir</button>
-			</form>
+			<button class="btn btn-primary" onclick="openEdit();">Editar</button>
+			<a href="/logout"><button class="btn btn-danger">Sair</button></a>
+			<button class="btn btn-danger" onclick="openEsc();">Excluir</button>
 		</div>
 		<img src="..." height="120" width="120">
 		<h2>Olá, {{ nome }}</h2>
@@ -132,5 +220,72 @@
 			
 		</div>
 	</div>
+
+	<!-- Exclusao de conta -->
+
+	<div class="form-esc" id="myEsc">
+ 		<h2>Tem certeza que deseja excluir sua conta?</h2>
+
+ 		<form class="form" method="POST" action="{{url_for('conta')}}">
+
+ 			<button class="btn btn-danger" name="remove" value="Excluir">Sim</button>
+ 			<button class="btn btn-primary" onclick="closeEsc();">Não</button>
+
+ 	</div>
+
+ 	<!-- Edição de conta -->
+
+	<div class="form-popup" id="myForm">
+ 		<button type="button" class="cancel" onclick="closeEdit()">X</button>
+		<h1>Edite suas informações</h1>
+ 		<form method="POST" action="{{url_for('conta')}}">
+			<div class="mb-3">
+    		<label for="exampleInputEmail1" class="form-label">Nome:</label>
+    		<input type="text" class="form-control" name="nome" value="{{ nome }}" maxlength="20" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+  		</div>
+  		<div class="mb-3">
+    		<label for="exampleInputEmail1" class="form-label">Email:</label>
+    		<input type="email" class="form-control" name="email" value="{{ email }}" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+  		</div>
+  		<div class="mb-3">
+    		<label for="exampleInputEmail1" class="form-label">Senha:</label>
+    		<input type="password" class="form-control" name="senha" value="{{ senha }}" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+  		</div>
+  		{% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+            <ul>
+                {%- for msg in errors %}
+                <li>{{ msg }}</li>
+                {% endfor -%}
+            </ul>
+
+            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% endwith %}
+
+  		<button type="submit" name="edit" value="Editar" class="btn btn-primary">Editar</button>
+		</form>
+	</div>
 </body>
+<script type="text/javascript">
+	function openEdit() {
+ 	 	document.getElementById("myForm").style.display = "block";
+	}
+
+	function closeEdit() {
+  		document.getElementById("myForm").style.display = "none";
+	}
+
+	function openEsc() {
+  		document.getElementById("myEsc").style.display = "block";
+	}
+
+	function closeEsc() {
+  		document.getElementById("myEsc").style.display = "none";
+	}
+</script>
 </html>

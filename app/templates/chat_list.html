@@ -1,0 +1,18 @@
+{% extends 'chat.html' %}
+
+
+{% block chat_list %}
+
+    {% for i, p in data  %}
+
+        
+        <a href="/grupos/{{ i }}">
+            <div class="pergunta">
+                <h2>{{ p }}</h2>
+            </div>
+        </a>
+
+    {% endfor %}
+
+
+{% endblock %}

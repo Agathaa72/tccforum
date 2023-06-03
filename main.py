@@ -176,7 +176,7 @@ def conta():
                 db.session.delete(item)
                 db.session.commit()
 
-                return redirect("/signup")
+                return redirect("/options")
 
             elif request.form.get("edit") == "Editar":
                 nome_novo = request.form["nome"]
@@ -184,6 +184,9 @@ def conta():
                 senha_nova = request.form["senha"]
                 
                 item = user.query.filter_by(nome=nome).first()
+
+                # Tenho que mudar os nomes nos demais tabelas
+                # Grupos, cursos, mensagens
                 
 
                 if item == None:
@@ -201,7 +204,7 @@ def conta():
                 else:
                     flash('Nome ou email de usuário existentes', 'error')
 
-                    return redirect("/inicio")
+                    return redirect("/conta")
     
     return render_template("conta.html", nome=nome, us=us, email=email, senha=senha)
 
@@ -327,7 +330,8 @@ def ver_curso(id):
         criador = cur.nome
 
         
-    return render_template("ver_curso.html")
+    return render_template("ver_curso.html", nome=curso_nome,
+                           sobre = curso_cont)
 
 @app.route("/cursos/novo", methods=["GET", "POST"])
 @login_required
@@ -359,13 +363,13 @@ def grupos():
     ids = []
 
 
-    cur = curso.query.all()
+    gru = grupo.query.all()
 
     # Transformando uma tupla em strings
 
-    for i in cur:
+    for i in gru:
 
-        ti = "".join(map(str, i.titulo_curso))
+        ti = "".join(map(str, i.titulo))
                         
         titles.append(ti)
 
@@ -388,8 +392,8 @@ def ver_grupos(id):
         return redirect(url_for("error"))
 
     else:
-        gru_nome = gru.titulo_curso
-        gru_cont = gru.conteudo_curso
+        gru_nome = gru.titulo
+        gru_cont = gru.conteudo
     
     return render_template("comunidade.html", grupo=gru_nome,
                            gru_desc = gru_cont)
@@ -402,13 +406,13 @@ def create_grupos():
     if request.method == "POST":
               
        titulo = request.form["title"]
-       descricao = request.form["conteudo"]
+       conteudo = request.form["conteudo"]
 
-       grupo = grupo(titulo=titulo, descricao=descricao, nome=nome)
+       gru = grupo(titulo=titulo, conteudo=conteudo, nome=nome)
         
                   
        
-       db.session.add(grupo)
+       db.session.add(gru)
        db.session.commit()
 
        return redirect(url_for("grupos"))
@@ -419,4 +423,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5022)
+    app.run(debug=True, port=5002)

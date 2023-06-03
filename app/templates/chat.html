@@ -86,7 +86,11 @@
 	i{
 		color: #8c52ff;
 	}
-
+	.pergunta{
+		border: 1px solid #8c52ff;
+		margin-top: 15px;
+		padding: 20px;
+	}
 
 </style>
 
@@ -122,9 +126,9 @@
 			<h1>Grupos <i class="fa fa-circle" aria-hidden="true"></i></h1>
 		</div>
 		<div class="relacionadas">
-			<div class="comunidade">
-				<h2>{ titulo }</h2>
-			</div>
+			{% block chat_list %}
+
+			{% endblock %}
 		</div>
 	</div>
 

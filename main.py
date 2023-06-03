@@ -18,6 +18,8 @@ from app import app, models
 # Aqui é uma das rotas, aqui ficará a landing page
 
 
+
+
 @app.route("/")
 def inicio():
     return render_template("site.html") 
@@ -217,11 +219,45 @@ def logout():
 
 @app.route("/forum")
 def forum():
-    return render_template("forum.html")
+    titles = []
+    ids = []
+
+
+    cur = pergunta.query.all()
+
+    # Transformando uma tupla em strings
+
+    for i in cur:
+
+        ti = "".join(map(str, i.titulo))
+                        
+        titles.append(ti)
+
+        id_unico = str(i.id)
+
+        id = "".join(map(str, id_unico))
+                        
+        ids.append(id)
+
+    data = zip(ids, titles)
+    
+    return render_template("pergunta_list.html", data=data)
 
 @app.route("/questao/<id>")
 def questao(id):
-    return render_template("ver_pergunta.html")
+
+    perg = pergunta.query.filter_by(id=id).first()
+
+    if perg is None:
+
+        return redirect(url_for("error"))
+
+    else:
+        pergunta_ = perg.titulo
+        conteudo = perg.conteudo
+    
+    return render_template("ver_pergunta.html", conteudo=conteudo,
+                           pergunta=pergunta_)
 
 @app.route("/questao/novo", methods=["GET", "POST"])
 @login_required
@@ -253,27 +289,29 @@ def criar_questao():
 def cursos():
 
     titles = []
-    conts = []
+    ids = []
 
-    titulo = curso.query.filter_by(id=id).with_entities(curso.titulo_curso).all()
-    conteudo = curso.query.filter_by(id=id).with_entities(curso.conteudo_curso).all()
+
+    cur = curso.query.all()
 
     # Transformando uma tupla em strings
 
-    for i in titulo:
+    for i in cur:
 
-        ti = "".join(map(str, i))
-                    
+        ti = "".join(map(str, i.titulo_curso))
+                        
         titles.append(ti)
 
-    for p in conteudo:
+        id_unico = str(i.id)
 
-        ro = "".join(map(str, p))
-                    
-        conts.append(ro)
+        id = "".join(map(str, id_unico))
+                        
+        ids.append(id)
+
+    data = zip(ids, titles)
     
     
-    return render_template("cursos.html", titles=titles, conts=conts)
+    return render_template("curso_list.html", data=data)
 
 @app.route("/cursos/<id>")
 def ver_curso(id):
@@ -317,22 +355,44 @@ def criar_curso():
 
 @app.route("/grupos")
 def grupos():
-    return render_template("chat.html")
+    titles = []
+    ids = []
+
+
+    cur = curso.query.all()
+
+    # Transformando uma tupla em strings
+
+    for i in cur:
+
+        ti = "".join(map(str, i.titulo_curso))
+                        
+        titles.append(ti)
+
+        id_unico = str(i.id)
+
+        id = "".join(map(str, id_unico))
+                        
+        ids.append(id)
+
+    data = zip(ids, titles)
+    
+    return render_template("chat_list.html", data=data)
 
 @app.route("/grupos/<id>")
 def ver_grupos(id):
-    cur = curso.query.filter_by(id=id).first()
+    gru = grupo.query.filter_by(id=id).first()
 
-    if cur is None:
+    if gru is None:
 
         return redirect(url_for("error"))
 
     else:
-        curso_nome = cur.titulo_curso
-        curso_cont = cur.conteudo_curso
-        criador = cur.nome
+        gru_nome = gru.titulo_curso
+        gru_cont = gru.conteudo_curso
     
-    return render_template("comunidade.html")
+    return render_template("comunidade.html", grupo=gru_nome,
+                           gru_desc = gru_cont)
 
 @app.route("/grupos/novo", methods=["GET", "POST"])
 @login_required
@@ -359,4 +419,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5006)
+    app.run(debug=True, port=5022)

@@ -1,12 +1,12 @@
-{% extends 'cursos.html' %}
+{% extends 'forum.html' %}
 
 
-{% block curso_list %}
+{% block pergunta_list %}
 
     {% for i, p in data  %}
 
         
-        <a href="/cursos/{{ i }}">
+        <a href="/questao/{{ i }}">
             <div class="pergunta">
                 <h2>{{ p }}</h2>
             </div>

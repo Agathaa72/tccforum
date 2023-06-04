@@ -14,14 +14,45 @@ from flask_login import login_user, logout_user, login_required
 from app.models import *
 from app import app, models
 from email.mime.multipart import MIMEMultipart
+from authlib.integrations.flask_client import OAuth
 from email.mime.text import MIMEText
+from pip._vendor import cachecontrol
+import google.oauth2.credentials
+import google_auth_oauthlib.flow
+import googleapiclient.discovery
+from apiclient.discovery import build
+import pathlib
 import smtplib
 import random
 
 
+# Chaves para Google
+
+CLIENT_SECRETS_FILE = "client_secret_login.json"
+CLIENT_SECRETS_FILE_sign_mentor = "client_secret_sign_mentor.json"
+CLIENT_SECRETS_FILE_sign_estudante = "client_secret_sign_estudante.json"
+
+SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly openid',
+          'https://www.googleapis.com/auth/userinfo.email openid',
+          'https://www.googleapis.com/auth/userinfo.profile openid']
+API_SERVICE_NAME = 'drive'
+API_VERSION = 'v2'
+
+
+
+# Credenciais, conexao com o json 
+
+
+def credentials_to_dict(credentials):
+  return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes}
+
+
 # Aqui é uma das rotas, aqui ficará a landing page
-
-
 
 
 @app.route("/")
@@ -248,17 +279,108 @@ def signup_mentor():
 
 # Google login e signup
 
+# Ajeitar mais tarde
+
 @app.route("/signup-estudante-google", methods=["GET", "POST"])
 def signup_estudante_google():
-    pass
+    estado = session['estado']
+
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE_sign_estudante, scopes=SCOPES, state=estado)
+    flow.redirect_uri = url_for('google_signup', _external=True)
+
+    auth_resposta = request.url
+    flow.fetch_token(authorization_response=auth_resposta)
+
+    
+    credenciais = flow.credentials
+    session['credenciais'] = credentials_to_dict(credenciais)
+
+    user_info_service = build('oauth2', 'v2', credentials=credenciais)
+    user_info = user_info_service.userinfo().get().execute()
+
+    nome = user_info["given_name"]
+    email = user_info["email"]
+    senha = user_info["id"]
+
+    user = user(nome=nome, email=email, senha=senha, admin=False,
+        	estudante=True)
+    db.session.add(user)
+    db.session.commit()
+
+
+    session["nome"] = nome
+
+    login_user(user)
+
+    return redirect(url_for('index'))
 
 @app.route("/signup-mentor-google", methods=["GET", "POST"])
 def signup_mentor_google():
-    pass
+    estado = session['estado']
+
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE_sign, scopes=SCOPES, state=estado)
+    flow.redirect_uri = url_for('google_signup', _external=True)
+
+    auth_resposta = request.url
+    flow.fetch_token(authorization_response=auth_resposta)
+
+    
+    credenciais = flow.credentials
+    session['credenciais'] = credentials_to_dict(credenciais)
+
+    user_info_service = build('oauth2', 'v2', credentials=credenciais)
+    user_info = user_info_service.userinfo().get().execute()
+
+    nome = user_info["given_name"]
+    email = user_info["email"]
+    senha = user_info["id"]
+
+    user = User(nome=nome, email=email, senha=senha, admin=True,
+        	estudante=False)
+    db.session.add(user)
+    db.session.commit()
+
+    session["nome"] = nome
+
+    login_user(user)
+
+    return redirect(url_for('index'))
 
 @app.route("/login-google", methods=["GET", "POST"])
 def login_google():
-    pass
+    estado = session['estado']
+
+    flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+        CLIENT_SECRETS_FILE, scopes=SCOPES, state=estado)
+    flow.redirect_uri = url_for('google_login', _external=True)
+
+    auth_resposta = request.url
+    flow.fetch_token(authorization_response=auth_resposta)
+
+    
+    credenciais = flow.credentials
+    session['credenciais'] = credentials_to_dict(credenciais)
+
+    user_info_service = build('oauth2', 'v2', credentials=credenciais)
+    user_info = user_info_service.userinfo().get().execute()
+
+    email = user_info['email']
+    
+    us = user.query.filter_by(email=email).first()
+
+    if us is not None:
+        login_user(us)
+        nome = us.nome
+
+
+        session["nome"] = nome
+
+        return redirect(url_for("index"))
+    else:
+        flash("Usuário inexistente . Se for um erro, faça login na forma convencional .", "error")
+        return redirect(url_for("login"))
 
 
 # Conta

@@ -13,6 +13,10 @@ from flask import Flask, flash, render_template, request, redirect, url_for, ses
 from flask_login import login_user, logout_user, login_required
 from app.models import *
 from app import app, models
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+import random
 
 
 # Aqui é uma das rotas, aqui ficará a landing page
@@ -34,6 +38,111 @@ def index():
 @app.route("/nao_encontrada")
 def error():
     return render_template("error.html")
+
+
+# Recuperação e revalidação de senha
+
+@app.route("/recuperacao/senha", methods=["GET", "POST"])
+def recuperacao():
+
+    if request.method=="POST":
+        email = request.form["email"]
+        session["email"] = email
+    
+        itens = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            
+        codigo = ''.join(random.choice(itens) for i in range(30))
+
+        EMAIL_ADDRESS = "softmaze6@gmail.com"
+        EMAIL_PASSWORD = "rilfivkrcwbpenpy"
+
+        link = f"http://127.0.0.1:5011/revalidacao/senha/{codigo}"
+
+        me = EMAIL_ADDRESS
+        you = email
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "Recuperação de senha - Knowzone"
+        msg['From'] = me
+        msg['To'] = you
+
+        html = f"""\
+        <!DOCTYPE html>
+        <html>
+        <head>
+                  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                  <title>KEYS | Informativo</title>
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                  <link rel="preconnect" href="https://fonts.googleapis.com">
+                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+                  <link rel="preconnect" href="https://fonts.googleapis.com">
+                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+        </head>
+
+        <body>
+
+                <nav>
+                        <div class="logo">
+                                <h1>Olá, { email } |</h1>
+                        </div>
+                </nav>
+
+                <div class="msg">
+                        <p>Olá, você recebeu este email porque</p>
+                        <p>deseja recuperar a senha de sua conta .</p>
+                        <p>Clique no link a seguir e troque a senha sua senha .</p>
+                        <p>-</p>
+                        <p>-</p>
+                        <p>Link: {link}</p>
+                </div>
+
+                <div class="info">
+                        <p>Email: { email }</p>
+                </div>
+
+                <footer>
+                        <p> © 2023 Knowzone</p>
+                </footer>
+
+        </body>
+        </html>
+        """
+        
+        part1 = MIMEText(html, 'html')
+
+        msg.attach(part1)
+
+        mail = smtplib.SMTP('smtp.gmail.com', 587)
+
+        mail.ehlo()
+
+        mail.starttls()
+
+        mail.login(me, EMAIL_PASSWORD)
+        mail.sendmail(me, you, msg.as_string())
+        mail.quit()
+    
+    
+    return render_template("recuperacao_senha.html")
+
+@app.route("/revalidacao/senha/<codigo>", methods=["GET", "POST"])
+def revalidacao(codigo):
+    if "email" in session:
+        email = session["email"]
+
+        us = user.query.filter_by(email=email).first()
+
+        if request.method=="POST":
+
+            senha = request.form["senha"]
+            
+            if us is not None:
+                us.senha = senha
+                db.session.commit()
+            else:
+                flash('Email de usuário inexistente', 'error')
 
 
 # Area dos formulários de login e sign
@@ -137,6 +246,21 @@ def signup_mentor():
 
     return render_template("signup_mentor.html")
 
+# Google login e signup
+
+@app.route("/signup-estudante-google", methods=["GET", "POST"])
+def signup_estudante_google():
+    pass
+
+@app.route("/signup-mentor-google", methods=["GET", "POST"])
+def signup_mentor_google():
+    pass
+
+@app.route("/login-google", methods=["GET", "POST"])
+def login_google():
+    pass
+
+
 # Conta
 
 @app.route("/user/<id>")
@@ -179,34 +303,21 @@ def conta():
                 return redirect("/options")
 
             elif request.form.get("edit") == "Editar":
-                nome_novo = request.form["nome"]
                 email_novo = request.form["email"]
                 senha_nova = request.form["senha"]
-                
-                item = user.query.filter_by(nome=nome).first()
 
-                # Tenho que mudar os nomes nos demais tabelas
-                # Grupos, cursos, mensagens
-                
 
-                if item == None:
+                # Alterando os nomes na tabela
+
                 
-                    item.nome = nome_novo
-                    
-                    item.email = email_novo
-                    item.senha = senha_nova
+                us.email = email_novo
+                us.senha = senha_nova
 
                     
-                    session["nome"] = nome_novo
+                db.session.commit()
                     
-                    db.session.commit()
-
-                else:
-                    flash('Nome ou email de usuário existentes', 'error')
-
-                    return redirect("/conta")
     
-    return render_template("conta.html", nome=nome, us=us, email=email, senha=senha)
+    return render_template("conta.html", nome=nome, us=us,email=email, senha=senha)
 
 @app.route("/logout")
 @login_required
@@ -423,4 +534,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5002)
+    app.run(debug=True, port=5010)

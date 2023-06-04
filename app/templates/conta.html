@@ -226,8 +226,6 @@
 	<div class="form-esc" id="myEsc">
  		<h2>Tem certeza que deseja excluir sua conta?</h2>
 
- 		<form class="form" method="POST" action="{{url_for('conta')}}">
-
  			<button class="btn btn-danger" name="remove" value="Excluir">Sim</button>
  			<button class="btn btn-primary" onclick="closeEsc();">Não</button>
 
@@ -239,10 +237,6 @@
  		<button type="button" class="cancel" onclick="closeEdit()">X</button>
 		<h1>Edite suas informações</h1>
  		<form method="POST" action="{{url_for('conta')}}">
-			<div class="mb-3">
-    		<label for="exampleInputEmail1" class="form-label">Nome:</label>
-    		<input type="text" class="form-control" name="nome" value="{{ nome }}" maxlength="20" id="exampleInputEmail1" aria-describedby="emailHelp" required>
-  		</div>
   		<div class="mb-3">
     		<label for="exampleInputEmail1" class="form-label">Email:</label>
     		<input type="email" class="form-control" name="email" value="{{ email }}" maxlength="80" id="exampleInputEmail1" aria-describedby="emailHelp" required>

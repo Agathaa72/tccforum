@@ -29,6 +29,9 @@ oauth = OAuth(app)
 
 # login e signup
 
-login.login_view = "login"
+login.login_view = "login_google"
+login.login_view = "signup_estudante_google"
+login.login_view = "signup_mentor_google"
 login.login_view = "signup_estudante"
 login.login_view = "signup_mentor"
+login.login_view = "login"

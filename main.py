@@ -12,18 +12,14 @@
 from flask import Flask, flash, render_template, request, redirect, url_for, session
 from flask_login import login_user, logout_user, login_required
 from app.models import *
-from app import app, models
-from email.mime.multipart import MIMEMultipart
+from app import app, models, funcs
 from authlib.integrations.flask_client import OAuth
-from email.mime.text import MIMEText
 from pip._vendor import cachecontrol
 import google.oauth2.credentials
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 from apiclient.discovery import build
-import pathlib
-import smtplib
-import random
+
 
 
 # Chaves para Google
@@ -80,80 +76,7 @@ def recuperacao():
         email = request.form["email"]
         session["email"] = email
     
-        itens = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            
-        codigo = ''.join(random.choice(itens) for i in range(30))
-
-        EMAIL_ADDRESS = "softmaze6@gmail.com"
-        EMAIL_PASSWORD = "rilfivkrcwbpenpy"
-
-        link = f"http://127.0.0.1:5011/revalidacao/senha/{codigo}"
-
-        me = EMAIL_ADDRESS
-        you = email
-
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = "Recuperação de senha - Knowzone"
-        msg['From'] = me
-        msg['To'] = you
-
-        html = f"""\
-        <!DOCTYPE html>
-        <html>
-        <head>
-                  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-                  <title>KEYS | Informativo</title>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                  <link rel="preconnect" href="https://fonts.googleapis.com">
-                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-                  <link rel="preconnect" href="https://fonts.googleapis.com">
-                  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
-        </head>
-
-        <body>
-
-                <nav>
-                        <div class="logo">
-                                <h1>Olá, { email } |</h1>
-                        </div>
-                </nav>
-
-                <div class="msg">
-                        <p>Olá, você recebeu este email porque</p>
-                        <p>deseja recuperar a senha de sua conta .</p>
-                        <p>Clique no link a seguir e troque a senha sua senha .</p>
-                        <p>-</p>
-                        <p>-</p>
-                        <p>Link: {link}</p>
-                </div>
-
-                <div class="info">
-                        <p>Email: { email }</p>
-                </div>
-
-                <footer>
-                        <p> © 2023 Knowzone</p>
-                </footer>
-
-        </body>
-        </html>
-        """
-        
-        part1 = MIMEText(html, 'html')
-
-        msg.attach(part1)
-
-        mail = smtplib.SMTP('smtp.gmail.com', 587)
-
-        mail.ehlo()
-
-        mail.starttls()
-
-        mail.login(me, EMAIL_PASSWORD)
-        mail.sendmail(me, you, msg.as_string())
-        mail.quit()
+        funcs.senha(email)
     
     
     return render_template("recuperacao_senha.html")
@@ -194,22 +117,38 @@ def opcao_conta():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+
+       if request.form.get("login") == "Login":
               
-       em = request.form["email"]
-       senha = request.form["senha"]
+           em = request.form["email"]
+           senha = request.form["senha"]
 
-       us = user.query.filter_by(email=em, senha=senha).first()
-                       
-       if us is None:
-            flash('Usuário inexistente ou dados incorretos', 'error')
-                  
-       else:
+           us = user.query.filter_by(email=em, senha=senha).first()
+                           
+           if us is None:
+                flash('Usuário inexistente ou dados incorretos', 'error')
+                      
+           else:
 
-           session["nome"] = us.nome
+               session["nome"] = us.nome
 
-           login_user(us)
+               login_user(us)
 
-           return redirect(url_for("index"))
+               return redirect(url_for("index"))
+
+        elif request.form.get("goog") == "Google":
+            flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+            flow.redirect_uri = url_for('login_google', _external=True)
+
+            auth_url, estado = flow.authorization_url(
+                      access_type='offline',
+                      include_granted_scopes='true')
+
+            session['estado'] = estado
+
+            return redirect(auth_url)
 
     return render_template("login.html")
 
@@ -218,29 +157,45 @@ def login():
 def signup_estudante():
     if request.method == "POST":
 
-       session["nome"] = request.form["nome"]
-              
-       nome = session["nome"]
-       em = request.form["email"]
-       senha = request.form["senha"]
+       if request.form.get("login") == "Login":
 
-       us = user(nome=nome, email=em, senha=senha, admin=False,
-        	estudante=True)
-         
-
-       nser = us.query.filter_by(nome=nome).first()
-       eser = us.query.filter_by(email=em).first()
-
-       if nser or eser is not None:
-            flash('Nome ou email de usuário existente', 'error')
+           session["nome"] = request.form["nome"]
                   
-       else:
-           db.session.add(us)
-           db.session.commit()
+           nome = session["nome"]
+           em = request.form["email"]
+           senha = request.form["senha"]
 
-           login_user(us)
+           us = user(nome=nome, email=em, senha=senha, admin=False,
+                    estudante=True)
+             
 
-           return redirect(url_for("index"))
+           nser = us.query.filter_by(nome=nome).first()
+           eser = us.query.filter_by(email=em).first()
+
+           if nser or eser is not None:
+                flash('Nome ou email de usuário existente', 'error')
+                      
+           else:
+               db.session.add(us)
+               db.session.commit()
+
+               login_user(us)
+
+               return redirect(url_for("index"))
+
+        elif request.form.get("goog") == "Google":
+            flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+            flow.redirect_uri = url_for('signup_estudante_google', _external=True)
+
+            auth_url, estado = flow.authorization_url(
+                      access_type='offline',
+                      include_granted_scopes='true')
+
+            session['estado'] = estado
+
+            return redirect(auth_url)
 
 
     return render_template("signup.html")
@@ -250,29 +205,45 @@ def signup_estudante():
 def signup_mentor():
     if request.method == "POST":
 
-       session["nome"] = request.form["nome"]
-              
-       nome = session["nome"]
-       em = request.form["email"]
-       senha = request.form["senha"]
+       if request.form.get("login") == "Login":
 
-       us = user(nome=nome, email=em, senha=senha, admin=True,
-        	estudante=False)
-         
-
-       nser = us.query.filter_by(nome=nome).first()
-       eser = us.query.filter_by(email=em).first()
-
-       if nser or eser is not None:
-            flash('Nome ou email de usuário existente', 'error')
+           session["nome"] = request.form["nome"]
                   
-       else:
-         db.session.add(us)
-         db.session.commit()
+           nome = session["nome"]
+           em = request.form["email"]
+           senha = request.form["senha"]
 
-         login_user(us)
+           us = user(nome=nome, email=em, senha=senha, admin=True,
+                    estudante=False)
+             
 
-         return redirect(url_for("index"))
+           nser = us.query.filter_by(nome=nome).first()
+           eser = us.query.filter_by(email=em).first()
+
+           if nser or eser is not None:
+                flash('Nome ou email de usuário existente', 'error')
+                      
+           else:
+             db.session.add(us)
+             db.session.commit()
+
+             login_user(us)
+
+             return redirect(url_for("index"))
+
+        elif request.form.get("goog") == "Google":
+            flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES)
+
+            flow.redirect_uri = url_for('signup_mentor_google', _external=True)
+
+            auth_url, estado = flow.authorization_url(
+                      access_type='offline',
+                      include_granted_scopes='true')
+
+            session['estado'] = estado
+
+            return redirect(auth_url)
 
 
     return render_template("signup_mentor.html")
@@ -287,7 +258,7 @@ def signup_estudante_google():
 
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE_sign_estudante, scopes=SCOPES, state=estado)
-    flow.redirect_uri = url_for('google_signup', _external=True)
+    flow.redirect_uri = url_for('signup_estudante_google', _external=True)
 
     auth_resposta = request.url
     flow.fetch_token(authorization_response=auth_resposta)
@@ -320,8 +291,8 @@ def signup_mentor_google():
     estado = session['estado']
 
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
-        CLIENT_SECRETS_FILE_sign, scopes=SCOPES, state=estado)
-    flow.redirect_uri = url_for('google_signup', _external=True)
+        CLIENT_SECRETS_FILE_sign_mentor, scopes=SCOPES, state=estado)
+    flow.redirect_uri = url_for('signup_mentor_google', _external=True)
 
     auth_resposta = request.url
     flow.fetch_token(authorization_response=auth_resposta)
@@ -354,7 +325,7 @@ def login_google():
 
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE, scopes=SCOPES, state=estado)
-    flow.redirect_uri = url_for('google_login', _external=True)
+    flow.redirect_uri = url_for('login_google', _external=True)
 
     auth_resposta = request.url
     flow.fetch_token(authorization_response=auth_resposta)

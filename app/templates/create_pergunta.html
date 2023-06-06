@@ -92,6 +92,11 @@
 		background: #8c52ff;
 	}
 
+	.form-select{
+		margin-bottom: 10px;
+		border-radius: 1px; 
+	}
+
 	
 
 	@media (max-width: 1000px){
@@ -131,9 +136,9 @@
 	          <a class="nav-link" href="/questao/novo" aria-current="page">Criar</a>
 	        </li>
 	      </ul>
-	      <form class="d-flex" role="search">
-	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
-	        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+	      <form class="d-flex" role="search" method="POST" action="{{url_for('criar_questao')}}">
+	        <input class="form-control me-2" name="pesquisa" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
+	        <button class="btn btn-outline-success" type="submit" name="search" value="Pesquisar">Pesquisar</button>
 	      </form>
 	    </div>
 	  </div>
@@ -155,13 +160,16 @@
 	  					<label for="exampleInputEmail1" class="form-label">Conteúdo:</label>
 	  					<textarea class="form-control" name="conteudo" id="exampleFormControlTextarea1" rows="3"></textarea>
 	  				</div>
-	  				<button class="btn btn-primary">Criar</button>
-	  				<!--<select class="form-select" aria-label="Default select example">
+	  				<select class="form-select" aria-label="Default select example">
   						<option selected>Selecione a matéria</option>
-  						<option value="1">One</option>
-  						<option value="2">Two</option>
-  						<option value="3">Three</option>
-					</select>-->
+  						<option value="1">Matemática</option>
+  						<option value="2">Portugues</option>
+  						<option value="3">Biologia</option>
+  						<option value="4">Geografia</option>
+  						<option value="5">História</option>
+  						<option value="6">Informática</option>
+					</select>
+	  				<button class="btn btn-primary">Criar</button>
 	  			</form>
 			</div>
 		</div>

@@ -21,6 +21,14 @@ import googleapiclient.discovery
 from apiclient.discovery import build
 
 
+# O que falta ?
+
+# Searchbar
+# Filtrar pesquisa
+# Flask socket ( chat )
+# Teste 
+
+
 
 # Chaves para Google
 

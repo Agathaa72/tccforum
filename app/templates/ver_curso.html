@@ -130,9 +130,9 @@
 	          <a class="nav-link" href="/questao/novo" aria-current="page">Criar</a>
 	        </li>
 	      </ul>
-	      <form class="d-flex" role="search">
-	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
-	        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+	      <form class="d-flex" role="search" method="POST" action="{{url_for('ver_curso')}}">
+	       	<input class="form-control me-2" name="pesquisa" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
+	        <button class="btn btn-outline-success" type="submit" name="search" value="Pesquisar">Pesquisar</button>
 	      </form>
 	    </div>
 	  </div>

@@ -95,16 +95,16 @@
 	          <a class="nav-link" href="/conta" aria-current="page">Perfil</a>
 	        </li>
 	      </ul>
-	      <form class="d-flex" role="search">
-	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
-	        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+	      <form class="d-flex" role="search" method="POST" action="{{url_for('ver_conta')}}">
+	        <input class="form-control me-2" name="pesquisa" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
+	        <button class="btn btn-outline-success" type="submit" name="search" value="Pesquisar">Pesquisar</button>
 	      </form>
 	    </div>
 	  </div>
 	</nav>
 
 	<div class="perfil">
-		<img src="..." height="120" width="120">
+		<img src="{{ url_for('static', filename='perfil.png') }}" height="120" width="120">
 		<h2>Olá, {{ nome }}</h2>
 		<p>Cargo:</p>
 		<div class="bio">

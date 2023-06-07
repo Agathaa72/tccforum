@@ -1,0 +1,18 @@
+{% extends 'resultado.html' %}
+
+
+{% block resultado_list %}
+
+    {% for i, p in data  %}
+
+        
+        <a href="/tudo/{{ i }}">
+            <div class="pergunta">
+                <h2>{{ p }}</h2>
+            </div>
+        </a>
+
+    {% endfor %}
+
+
+{% endblock %}

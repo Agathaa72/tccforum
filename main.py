@@ -61,12 +61,122 @@ def credentials_to_dict(credentials):
 
 @app.route("/")
 def inicio():
-    return render_template("site.html") 
+    return render_template("site.html")
+
+# Resultados de perguntas
+
+@app.route("/resultados/perguntas", methods=["GET", "POST"])
+def resultado_pesquisa():
+
+    nome = request.args.get("q")
+
+    perg = pergunta.query.filter_by(nome=nome).with_entities(pergunta.nome).all()
+    
+    pergunta = []
+    
+
+    for i in perg:
+
+        nome_perg = "".join(map(str, i.nome))
+                        
+        pergunta.append(nome_perg)
+
+    return render_template("resultado_list.html", pergunta=pergunta)
+
+# Resultados de usuarios
+
+@app.route("/resultados/users", methods=["GET", "POST"])
+def resultado_user():
+
+    nome = request.args.get("q")
+
+    us = user.query.filter_by(nome=nome).with_entities(user.nome).all()
+
+    nomes = []
+
+    for i in us:
+
+        nome_user = "".join(map(str, i.nome))
+                        
+        nomes.append(nome_user)
+
+    return render_template("resultado_user.html", nomes=nomes)
+
+# Resultados de grupos
+
+@app.route("/resultados/grupos", methods=["GET", "POST"])
+def resultado_grupos():
+
+    nome = request.args.get("q")
+
+    gru = grupo.query.filter_by(nome=nome).with_entities(grupo.nome).all()
+
+    grupo = []
+
+    for i in grupo:
+
+        nome_grupo = "".join(map(str, i.nome))
+                        
+        grupo.append(nome_grupo)
+
+    return render_template("resultado_grupos.html", grupo=grupo)
+
+# Resultados de cursos
+
+@app.route("/resultados/cursos", methods=["GET", "POST"])
+def resultado_cursos():
+
+    nome = request.args.get("q")
+
+    cur = curso.query.filter_by(nome=nome).with_entities(curso.nome).all()
+
+    curso = []
+
+    for i in curso:
+
+        nome_curso = "".join(map(str, i.nome))
+                        
+        curso.append(nome_curso)
+
+    return render_template("resultado_cursos.html", curso=curso)
+  
 
 # Passar o comando de pesquisa	
 
-@app.route("/lobby")
+@app.route("/lobby", methods=["GET", "POST"])
 def index():
+    if request.method == "POST":
+
+      # Barra de pesquisa
+  
+      if request.form.get("search") == "Pesquisar":
+
+        pesquisa = request.form["pesquisa"]
+
+        us = user.query.filter_by(nome=pesquisa).first()
+
+        if us is not None:
+
+           return redirect(url_for("resultado_user", q=pesquisa))
+
+        perg = pergunta.query.filter_by(nome=pesquisa).first()
+
+        if perg is not None:
+
+           return redirect(url_for("resultado_pesquisa", q=pesquisa))
+
+        cur = curso.query.filter_by(nome=pesquisa).first()
+
+        if cur is not None:
+
+           return redirect(url_for("resultado_cursos", q=pesquisa))
+
+        us = user.query.filter_by(nome=pesquisa).first()
+
+        if gru is not None:
+
+           return redirect(url_for("resultado_grupos", q=pesquisa))
+  
     return render_template("index.html") 
 
 
@@ -126,7 +236,7 @@ def opcao_conta():
 def login():
     if request.method == "POST":
 
-       if request.form.get("login") == "Login":
+      if request.form.get("login") == "Login":
               
            em = request.form["email"]
            senha = request.form["senha"]
@@ -144,7 +254,7 @@ def login():
 
                return redirect(url_for("index"))
 
-        elif request.form.get("goog") == "Google":
+      elif request.form.get("goog") == "Google":
             flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=SCOPES)
 
@@ -165,7 +275,7 @@ def login():
 def signup_estudante():
     if request.method == "POST":
 
-       if request.form.get("login") == "Login":
+      if request.form.get("login") == "Login":
 
            session["nome"] = request.form["nome"]
                   
@@ -191,7 +301,7 @@ def signup_estudante():
 
                return redirect(url_for("index"))
 
-        elif request.form.get("goog") == "Google":
+      elif request.form.get("goog") == "Google":
             flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=SCOPES)
 
@@ -213,7 +323,7 @@ def signup_estudante():
 def signup_mentor():
     if request.method == "POST":
 
-       if request.form.get("login") == "Login":
+      if request.form.get("login") == "Login":
 
            session["nome"] = request.form["nome"]
                   
@@ -239,7 +349,7 @@ def signup_mentor():
 
              return redirect(url_for("index"))
 
-        elif request.form.get("goog") == "Google":
+      elif request.form.get("goog") == "Google":
             flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
             CLIENT_SECRETS_FILE, scopes=SCOPES)
 
@@ -364,7 +474,7 @@ def login_google():
 
 # Conta
 
-@app.route("/user/<id>")
+@app.route("/user/<id>", methods=["GET", "POST"])
 def ver_conta(id):
 
     us = user.query.filter_by(id=id).first()
@@ -432,7 +542,7 @@ def logout():
 
 # Forum
 
-@app.route("/forum")
+@app.route("/forum", methods=["GET", "POST"])
 def forum():
     titles = []
     ids = []
@@ -458,7 +568,7 @@ def forum():
     
     return render_template("pergunta_list.html", data=data)
 
-@app.route("/questao/<id>")
+@app.route("/questao/<id>", methods=["GET", "POST"])
 def questao(id):
 
     perg = pergunta.query.filter_by(id=id).first()
@@ -500,7 +610,7 @@ def criar_questao():
 
 # Cursos
 
-@app.route("/cursos")
+@app.route("/cursos", methods=["GET", "POST"])
 def cursos():
 
     titles = []
@@ -528,7 +638,7 @@ def cursos():
     
     return render_template("curso_list.html", data=data)
 
-@app.route("/cursos/<id>")
+@app.route("/cursos/<id>", methods=["GET", "POST"])
 def ver_curso(id):
     cur = curso.query.filter_by(id=id).first()
 
@@ -569,7 +679,7 @@ def criar_curso():
 
 # Comunidade
 
-@app.route("/grupos")
+@app.route("/grupos", methods=["GET", "POST"])
 def grupos():
     titles = []
     ids = []
@@ -595,7 +705,7 @@ def grupos():
     
     return render_template("chat_list.html", data=data)
 
-@app.route("/grupos/<id>")
+@app.route("/grupos/<id>", methods=["GET", "POST"])
 def ver_grupos(id):
     gru = grupo.query.filter_by(id=id).first()
 
@@ -635,4 +745,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5010)
+    app.run(debug=True, port=5011)

@@ -159,23 +159,31 @@ def index():
 
            return redirect(url_for("resultado_user", q=pesquisa))
 
-        perg = pergunta.query.filter_by(nome=pesquisa).first()
+        else:
 
-        if perg is not None:
+          perg = pergunta.query.filter_by(nome=pesquisa).first()
 
-           return redirect(url_for("resultado_pesquisa", q=pesquisa))
+          if perg is not None:
 
-        cur = curso.query.filter_by(nome=pesquisa).first()
+            return redirect(url_for("resultado_pesquisa", q=pesquisa))
 
-        if cur is not None:
+          else:
 
-           return redirect(url_for("resultado_cursos", q=pesquisa))
+            cur = curso.query.filter_by(nome=pesquisa).first()
 
-        us = user.query.filter_by(nome=pesquisa).first()
+            if cur is not None:
 
-        if gru is not None:
+              return redirect(url_for("resultado_cursos", q=pesquisa))
 
-           return redirect(url_for("resultado_grupos", q=pesquisa))
+            else:
+
+              gru = grupo.query.filter_by(nome=pesquisa).first()
+
+              if gru is not None:
+
+                return redirect(url_for("resultado_grupos", q=pesquisa))
+
+          
   
     return render_template("index.html") 
 
@@ -745,4 +753,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5011)
+    app.run(debug=True, port=5016)

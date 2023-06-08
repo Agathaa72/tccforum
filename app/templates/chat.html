@@ -92,6 +92,12 @@
 		padding: 20px;
 	}
 
+	
+	.form-select{
+		margin-bottom: 10px;
+		border-radius: 1px; 
+	}
+
 </style>
 
 <body>
@@ -124,6 +130,17 @@
 	<div class="forum">
 		<div class="perguntas">
 			<h1>Grupos <i class="fa fa-circle" aria-hidden="true"></i></h1>
+			<p>Matéria:</p>
+			<select class="form-select" aria-label="Default select example">
+  				<option selected>Selecione a matéria</option>
+  				<option value="1">Matemática</option>
+  				<option value="2">Portugues</option>
+  				<option value="3">Biologia</option>
+  				<option value="4">Geografia</option>
+  				<option value="5">História</option>
+  				<option value="6">Informática</option>
+			</select>
+			<button class="btn btn-primary">Filtrar</button>
 		</div>
 		<div class="relacionadas">
 			{% block chat_list %}

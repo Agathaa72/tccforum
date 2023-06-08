@@ -3,16 +3,11 @@
 
 {% block resultado_list %}
 
-    {% for i, p in data  %}
-
-        
-        <a href="/user/{{ i }}">
+        <a href="/user/{{ us.id }}">
             <div class="pergunta">
-                <h2>{{ p }}</h2>
+                <h2>{{ us.nome }}</h2>
             </div>
         </a>
-
-    {% endfor %}
 
 
 {% endblock %}

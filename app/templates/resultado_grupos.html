@@ -3,16 +3,12 @@
 
 {% block resultado_list %}
 
-    {% for i, p in data  %}
-
         
-        <a href="/grupos/{{ i }}">
+        <a href="/grupos/{{ gru.id }}">
             <div class="pergunta">
-                <h2>{{ p }}</h2>
+                <h2>{{ gru.titulo }}</h2>
             </div>
         </a>
-
-    {% endfor %}
 
 
 {% endblock %}

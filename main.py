@@ -23,7 +23,6 @@ from apiclient.discovery import build
 
 # O que falta ?
 
-# Searchbar
 # Filtrar pesquisa
 # Flask socket ( chat )
 # Teste 
@@ -70,18 +69,9 @@ def resultado_pesquisa():
 
     nome = request.args.get("q")
 
-    perg = pergunta.query.filter_by(nome=nome).with_entities(pergunta.nome).all()
-    
-    pergunta = []
-    
+    perg = pergunta.query.filter_by(titulo=nome).first()
 
-    for i in perg:
-
-        nome_perg = "".join(map(str, i.nome))
-                        
-        pergunta.append(nome_perg)
-
-    return render_template("resultado_list.html", pergunta=pergunta)
+    return render_template("resultado_list.html", perg=perg)
 
 # Resultados de usuarios
 
@@ -90,17 +80,9 @@ def resultado_user():
 
     nome = request.args.get("q")
 
-    us = user.query.filter_by(nome=nome).with_entities(user.nome).all()
+    us = user.query.filter_by(nome=nome).first()
 
-    nomes = []
-
-    for i in us:
-
-        nome_user = "".join(map(str, i.nome))
-                        
-        nomes.append(nome_user)
-
-    return render_template("resultado_user.html", nomes=nomes)
+    return render_template("resultado_user.html", us=us)
 
 # Resultados de grupos
 
@@ -109,17 +91,9 @@ def resultado_grupos():
 
     nome = request.args.get("q")
 
-    gru = grupo.query.filter_by(nome=nome).with_entities(grupo.nome).all()
+    gru = grupo.query.filter_by(titulo=nome).first()
 
-    grupo = []
-
-    for i in grupo:
-
-        nome_grupo = "".join(map(str, i.nome))
-                        
-        grupo.append(nome_grupo)
-
-    return render_template("resultado_grupos.html", grupo=grupo)
+    return render_template("resultado_grupos.html", gru=gru)
 
 # Resultados de cursos
 
@@ -128,17 +102,11 @@ def resultado_cursos():
 
     nome = request.args.get("q")
 
-    cur = curso.query.filter_by(nome=nome).with_entities(curso.nome).all()
+    cur = curso.query.filter_by(titulo_curso=nome).first()
 
-    curso = []
+    
 
-    for i in curso:
-
-        nome_curso = "".join(map(str, i.nome))
-                        
-        curso.append(nome_curso)
-
-    return render_template("resultado_cursos.html", curso=curso)
+    return render_template("resultado_cursos.html", cur=cur)
   
 
 # Passar o comando de pesquisa	
@@ -154,36 +122,33 @@ def index():
         pesquisa = request.form["pesquisa"]
 
         us = user.query.filter_by(nome=pesquisa).first()
+        perg = pergunta.query.filter_by(titulo=pesquisa).first()
+        cur = curso.query.filter_by(titulo_curso=pesquisa).first()
+        gru = grupo.query.filter_by(titulo=pesquisa).first()
 
-        if us is not None:
+        data = [us, perg, cur, gru]
+    
+
+        if data[0] is not None:
 
            return redirect(url_for("resultado_user", q=pesquisa))
 
+        elif data[1] is not None:
+
+           return redirect(url_for("resultado_pesquisa", q=pesquisa))
+
+        elif data[2] is not None:
+
+           return redirect(url_for("resultado_cursos", q=pesquisa))
+
+        elif data[3] is not None:
+
+           return redirect(url_for("resultado_grupos", q=pesquisa))
+
         else:
 
-          perg = pergunta.query.filter_by(nome=pesquisa).first()
+            return redirect(url_for("error"))
 
-          if perg is not None:
-
-            return redirect(url_for("resultado_pesquisa", q=pesquisa))
-
-          else:
-
-            cur = curso.query.filter_by(nome=pesquisa).first()
-
-            if cur is not None:
-
-              return redirect(url_for("resultado_cursos", q=pesquisa))
-
-            else:
-
-              gru = grupo.query.filter_by(nome=pesquisa).first()
-
-              if gru is not None:
-
-                return redirect(url_for("resultado_grupos", q=pesquisa))
-
-          
   
     return render_template("index.html") 
 
@@ -753,4 +718,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5016)
+    app.run(debug=True, port=5020)

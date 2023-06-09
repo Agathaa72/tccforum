@@ -124,6 +124,11 @@
 		border-radius: 1px;
 	}
 
+	.alert{
+		border-radius: 1px;
+	}
+
+
 	@media(max-width: 950px){
 		.entrar{
 			width: 90%;
@@ -182,6 +187,21 @@
 	  				</div>
 	  				<button type="submit" class="btn btn-primary" name="login" value="Login">Login</button>
 	  			</form>
+	  			{% with errors = get_flashed_messages(category_filter=["error"]) %}
+		        {% if errors %}
+		        <div class="alert alert-danger alert-dismissible fade show"
+		             role="alert">
+		            <ul>
+		                {%- for msg in errors %}
+		                <li>{{ msg }}</li>
+		                {% endfor -%}
+		            </ul>
+
+		            <button type="button" class="btn-close" data-bs-dismiss="alert"
+		                    aria-label="Close"></button>
+		        </div>
+		        {% endif %}
+		        {% endwith %}
 			</div>
 			<div class="buttons">
 				<div class="or" style="display: flex;">

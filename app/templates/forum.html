@@ -120,19 +120,6 @@
 	<div class="forum">
 		<div class="perguntas">
 			<h1>Todas as perguntas</h1>
-			<p>Matéria:</p>
-			<form method="POST" action="{{url_for('index')}}">
-				<select class="form-select" name="select" aria-label="Default select example">
-  					<option selected>Selecione a matéria</option>
-  					<option value="Matematica">Matemática</option>
-  					<option value="Portugues">Portugues</option>
-  					<option value="Biologia">Biologia</option>
-  					<option value="Geografia">Geografia</option>
-  					<option value="Historia">História</option>
-  					<option value="Informatica">Informática</option>
-				</select>
-				<button class="btn btn-primary" name="filter" value="Filtrar">Filtrar</button>
-			</form>
 		</div>
 		<div class="relacionadas">
 			{% block pergunta_list %}

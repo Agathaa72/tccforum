@@ -23,7 +23,6 @@ from apiclient.discovery import build
 
 # O que falta ?
 
-# Filtrar pesquisa
 # Flask socket ( chat )
 
 
@@ -151,28 +150,6 @@ def index():
           else:
 
              return redirect(url_for("error"))
-
-      elif request.form.get("filter") == "Filtrar":
-          
-          select = request.form.get('select')
-
-          if select == "Matematica":
-              pass
-            
-          elif select == "Portugues":
-              pass
-
-          elif select == "Biologia":
-              pass
-
-          elif select == "Geografia":
-              pass
-
-          elif select == "Historia":
-              pass
-
-          elif select == "informatica":
-              pass
 
   
     return render_template("index.html") 
@@ -589,11 +566,12 @@ def criar_questao():
     nome = session["nome"]
     
     if request.method == "POST":
-              
+
+       select = request.form.get('select')
        titulo = request.form["title"]
        conteudo = request.form["conteudo"]
 
-       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome)
+       perg = pergunta(titulo=titulo, conteudo=conteudo, nome=nome, materia=select)
         
                   
        
@@ -632,7 +610,9 @@ def cursos():
         ids.append(id)
 
     data = zip(ids, titles)
+
     
+            
     
     return render_template("curso_list.html", data=data)
 
@@ -659,11 +639,13 @@ def criar_curso():
     nome = session["nome"]
     
     if request.method == "POST":
-              
+
+        
+       select = request.form.get('select')       
        titulo = request.form["title"]
        conteudo = request.form["conteudo"]
 
-       curs = curso(titulo_curso=titulo, conteudo_curso=conteudo, nome=nome)
+       curs = curso(titulo_curso=titulo, conteudo_curso=conteudo, nome=nome, materia=select)
         
                   
        
@@ -724,11 +706,13 @@ def create_grupos():
     nome = session["nome"]
     
     if request.method == "POST":
-              
+
+        
+       select = request.form.get('select')       
        titulo = request.form["title"]
        conteudo = request.form["conteudo"]
 
-       gru = grupo(titulo=titulo, conteudo=conteudo, nome=nome)
+       gru = grupo(titulo=titulo, conteudo=conteudo, nome=nome, materia=select)
         
                   
        
@@ -743,4 +727,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5021)
+    app.run(debug=True, port=5029)

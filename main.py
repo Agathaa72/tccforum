@@ -25,7 +25,6 @@ from apiclient.discovery import build
 
 # Filtrar pesquisa
 # Flask socket ( chat )
-# Teste 
 
 
 
@@ -119,35 +118,61 @@ def index():
   
       if request.form.get("search") == "Pesquisar":
 
-        pesquisa = request.form["pesquisa"]
+          pesquisa = request.form["pesquisa"]
 
-        us = user.query.filter_by(nome=pesquisa).first()
-        perg = pergunta.query.filter_by(titulo=pesquisa).first()
-        cur = curso.query.filter_by(titulo_curso=pesquisa).first()
-        gru = grupo.query.filter_by(titulo=pesquisa).first()
+          # A pesquisa a inda esta muito fraca, so funciona
+          # com user, os demais tem que ser alterado como
+          # pesquisar atraves de palavras chaves .
 
-        data = [us, perg, cur, gru]
+          us = user.query.filter_by(nome=pesquisa).first()
+          perg = pergunta.query.filter_by(titulo=pesquisa).first()
+          cur = curso.query.filter_by(titulo_curso=pesquisa).first()
+          gru = grupo.query.filter_by(titulo=pesquisa).first()
+
+          data = [us, perg, cur, gru]
     
 
-        if data[0] is not None:
+          if data[0] is not None:
 
-           return redirect(url_for("resultado_user", q=pesquisa))
+             return redirect(url_for("resultado_user", q=pesquisa))
 
-        elif data[1] is not None:
+          elif data[1] is not None:
 
-           return redirect(url_for("resultado_pesquisa", q=pesquisa))
+             return redirect(url_for("resultado_pesquisa", q=pesquisa))
 
-        elif data[2] is not None:
+          elif data[2] is not None:
 
-           return redirect(url_for("resultado_cursos", q=pesquisa))
+             return redirect(url_for("resultado_cursos", q=pesquisa))
 
-        elif data[3] is not None:
+          elif data[3] is not None:
 
-           return redirect(url_for("resultado_grupos", q=pesquisa))
+             return redirect(url_for("resultado_grupos", q=pesquisa))
 
-        else:
+          else:
 
-            return redirect(url_for("error"))
+             return redirect(url_for("error"))
+
+      elif request.form.get("filter") == "Filtrar":
+          
+          select = request.form.get('select')
+
+          if select == "Matematica":
+              pass
+            
+          elif select == "Portugues":
+              pass
+
+          elif select == "Biologia":
+              pass
+
+          elif select == "Geografia":
+              pass
+
+          elif select == "Historia":
+              pass
+
+          elif select == "informatica":
+              pass
 
   
     return render_template("index.html") 
@@ -718,4 +743,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5020)
+    app.run(debug=True, port=5021)

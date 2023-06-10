@@ -688,7 +688,8 @@ def grupos():
 @app.route("/grupos/<id>", methods=["GET", "POST"])
 def ver_grupos(id):
     gru = grupo.query.filter_by(id=id).first()
-
+    mensagens = []
+    
     if gru is None:
 
         return redirect(url_for("error"))
@@ -696,9 +697,15 @@ def ver_grupos(id):
     else:
         gru_nome = gru.titulo
         gru_cont = gru.conteudo
+
+        if request.method == "POST":
+
+            mensagem = request.form["mensagem"]
+
+            mensagens.append(mensagem)
     
     return render_template("comunidade.html", grupo=gru_nome,
-                           gru_desc = gru_cont)
+                           gru_desc = gru_cont, mensagens=mensagens, id=id)
 
 @app.route("/grupos/novo", methods=["GET", "POST"])
 @login_required
@@ -727,4 +734,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5029)
+    app.run(debug=True, port=5003)

@@ -98,10 +98,9 @@
 	  	width: 70%;
 	  	height: 450px;
 	  	border-radius: 1px;
-	  	background-color: #fff;
+	  	background-color: #f2f2f2;
 	  	left: 50%;
 	  	top: 50%;
-	  	background-color: white;
 	  	position: relative;
 	  	left: 2%; 
 	  	max-height: 450px;
@@ -134,23 +133,38 @@
 	  color: gray;
 	}
 	.bottom_wrapper .send_message {
-	  width: 140px;
-	  height: 50px;
+	  width: 1px;
+	  height: 1px;
 	  display: inline-block;
 	  border-radius: 1px;
-	  background-color: #8c52ff;
-	  border: 2px solid #8c52ff;
+	  background-color: white;
+	  border: 2px solid white;
 	  color: #fff;
 	  cursor: pointer;
 	  transition: all 0.2s linear;
 	  text-align: center;
 	  float: right;
 	}
-	.bottom_wrapper .send_message:hover {
+
+	.btn{
+		width: 140px;
+	  	height: 50px;
+	 	display: inline-block;
+	  	border-radius: 1px;
+	  	background-color: #8c52ff;
+	  	border: 2px solid #8c52ff;
+	  	color: #fff;
+	  	cursor: pointer;
+	  	transition: all 0.2s linear;
+	  	text-align: center;
+	  	float: right;
+	}
+
+	.bottom_wrapper .btn:hover {
 	  color: #8c52ff;
 	  background-color: #fff;
 	}
-	.bottom_wrapper .send_message .text{
+	.bottom_wrapper .btn .text {
 	  font-size: 18px;
 	  font-weight: 300;
 	  display: inline-block;
@@ -241,25 +255,32 @@
 
 							<!-- Aqui começa o for -->
 
+							{% for i in mensagens %}
+
 					    	<div class="message_template">
 					    		<div class="text_wrapper">
 					        		<div class="text">
-					     				<p>kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk</p>
+					     				<p>{{ i }}</p>
 					        		</div>
 					    		</div>			    
 							</div>
+
+							{% endfor %}
 					    </ul>
 					</div>
 				</div>
 			</div>
 			<div class="bottom_wrapper clearfix">
-				<div class="message_input_wrapper">
-				    <input class="message_input" maxlength="200" placeholder="Escreva sua mensagem aqui..." />
-				</div>
-				<div class="send_message">
-				    <div class="icon"></div>
-				    <div class="text">Enviar</div>
-				</div>
+				<form method="POST" action="{{ url_for('ver_grupos', id=id) }}">
+					<div class="message_input_wrapper">
+				    	<input class="message_input" name="mensagem" maxlength="200" placeholder="Escreva sua mensagem aqui..." />
+					</div>
+					<div class="send_message">
+						<div class="text_wrapper">
+							<button class="btn btn-primary">Enviar</button>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 

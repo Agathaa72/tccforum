@@ -234,10 +234,14 @@
 				<h1>Respostas</h1>
 				<div class="respostas">
 
+					{% for i in resposta %}
+
 					<div class="bio">
-						<p>{{ resposta }}</p>
+						<p>{{ i.conteudo }}</p>
 
 					</div>
+
+					{% endfor %}
 
 				</div>
 			</div>
@@ -246,7 +250,7 @@
 		<div class="form-popup" id="resposta">
 	 		<button type="button" class="cancel" onclick="fecharResposta();">X</button>
 			<h1>Dê sua resposta</h1>
-	 		<form method="POST" action="{{url_for('questao')}}">
+	 		<form method="POST" action="{{url_for('questao', id=id)}}">
 	  			<div class="mb-3">
 	    			<textarea class="form-control" name="resposta" required></textarea>
 	  			</div>

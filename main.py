@@ -546,7 +546,12 @@ def forum():
 @app.route("/questao/<id>", methods=["GET", "POST"])
 def questao(id):
 
+    # selecionar todas as respostas
+        
+    nome = ""
+    
     perg = pergunta.query.filter_by(id=id).first()
+    resposta = respostas.query.filter_by(pergunta=perg.titulo).with_entities(respostas.conteudo).all()
 
     if perg is None:
 
@@ -555,9 +560,25 @@ def questao(id):
     else:
         pergunta_ = perg.titulo
         conteudo = perg.conteudo
+
+    if request.method == "POST":
+       response = request.form["resposta"]
+
+       nome = session["nome"]  
+
+       if nome in [None, ""]:
+          return redirect(url_for("login"))
+
+       else:
+
+          res = respostas(conteudo=response, pergunta=pergunta_, nome=nome)
+           
+          db.session.add(res)
+          db.session.commit()
+        
     
     return render_template("ver_pergunta.html", conteudo=conteudo,
-                           pergunta=pergunta_)
+                           pergunta=pergunta_, resposta=resposta, id=id)
 
 @app.route("/questao/novo", methods=["GET", "POST"])
 @login_required
@@ -734,4 +755,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5003)
+    app.run(debug=True, port=5007)

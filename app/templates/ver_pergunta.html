@@ -18,6 +18,7 @@
 	*{
 		margin: 0;
 		padding: 0;
+		box-sizing: border-box;
 	}
 
 	body{
@@ -27,6 +28,15 @@
 	.navbar{
 		background: #8c52ff;
 		font-family: "Poppins", sans-serif;
+	}
+
+	.btn{
+		background: #8c52ff;
+		margin-top: 10px;
+	}
+
+	.btn:hover{
+		background: #8c52ff;
 	}
 	
 	.navbar a{
@@ -73,6 +83,20 @@
 		padding: 20px;
 	}
 
+	.respostas{
+		margin-top: 10px;
+		width: 100%;
+		border: 1px solid #8c52ff;
+		padding: 20px;
+	}
+
+	.res{
+		position: relative;
+		left: 2%;
+		margin-top: 10px;
+		width: 70%;
+	}
+
 	textarea {
 		height: 200px;
 	}
@@ -82,6 +106,7 @@
 	}
 
 	.bio{
+		margin-top: 10px;
 		width: 100%;
 		padding: 20px;
 		border-radius: 8px;
@@ -91,6 +116,51 @@
 
 	.pergunta h4{
 		margin-top: 10px;
+	}
+
+	.open-button{
+	  font-weight: bold;
+	  outline: none;
+	  border: none;
+	  font-size: 15px;
+	  background: #f0f1f2;
+	}
+
+	.form-popup {
+	  display: none;
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  -ms-transform: translate(-50%, -50%);
+	  transform: translate(-50%, -50%);
+	  align-items: center;
+	  /*border: 3px solid #f1f1f1;*/
+	  z-index: 9;
+	  background: white;
+	  color: #121212;
+	  height: 70%;
+	  width: 50%;
+	  box-shadow: 2px 2px 2px 550px rgba(0, 0, 0, 0.2);
+
+
+	}
+
+	.form-popup .btn, .form-popup h1, .form-popup .form-control{
+		border-radius: 1px;
+		width: 90%;
+		position: relative;
+		left: 5%;
+	}
+
+	.cancel{
+	  border:none;
+	  outline: none;
+	  background: white;
+	  color: #121212;
+	  font-size: 2rem;
+	  position: relative;
+	  top: 5px;
+	  left: 20px;
 	}
 
 	@media (max-width: 1000px){
@@ -106,6 +176,16 @@
 		.pergunta {
 			width: 90%;
 			left: 5%;
+		}
+
+		.res {
+			width: 90%;
+			left: 5%;
+		}
+
+		.form-popup{
+			width: 80%;
+			height: 80%;
 		}
 	}
 
@@ -146,11 +226,45 @@
 			<div class="pergunta">
 				<div class="bio">
 					<p>{{ conteudo }}</p>
+
 				</div>
-				
+				<button class="btn btn-primary" onclick="criarResposta();">Responder</button>				
+			</div>
+			<div class="res">
+				<h1>Respostas</h1>
+				<div class="respostas">
+
+					<div class="bio">
+						<p>{{ resposta }}</p>
+
+					</div>
+
+				</div>
 			</div>
 		</div>
 
+		<div class="form-popup" id="resposta">
+	 		<button type="button" class="cancel" onclick="fecharResposta();">X</button>
+			<h1>Dê sua resposta</h1>
+	 		<form method="POST" action="{{url_for('questao')}}">
+	  			<div class="mb-3">
+	    			<textarea class="form-control" name="resposta" required></textarea>
+	  			</div>
+	  			<button type="submit" name="env" value="Enviar" class="btn btn-primary">Enviar</button>
+	  		</form>
+	  	</div>
+
 	</div>
 </body>
+<script type="text/javascript">
+	
+	function criarResposta() {
+		document.getElementById("resposta").style.display = "block";
+	}
+
+	function fecharResposta() {
+		document.getElementById("resposta").style.display = "none";
+	}
+
+</script>
 </html>

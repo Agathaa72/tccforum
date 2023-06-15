@@ -23,7 +23,6 @@ app.config["SECRET_KEY"] = "wZc3w7Am3hPMaFp3jqrhxASdRBHcydpEHiKaAp7xgtp"
 # Variaveis de login manager, db e oauth
 
 login = LoginManager(app)
-
 db = SQLAlchemy(app)
 oauth = OAuth(app)
 

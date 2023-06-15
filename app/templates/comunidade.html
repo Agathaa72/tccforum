@@ -285,5 +285,42 @@
 		</div>
 
 	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
+	<script>
+		window.onload = function(){
+
+			const socket = io('http://127.0.0.1:5000/grupos/{{ id }}');
+
+			function addToChat(msg){
+				const p = document.createElement("p");
+				const chat = document.querySelector(".message_template");
+				p.innerHTML = `<p> ${msg.messagem}`
+				chat.append(p);
+			}
+
+			socket.on("connect", () => {
+				socket.send("User conectado ao chat.")
+			});
+
+			document.querySelector("form").addEventListener("submit", function(event){
+				event.preventDefault();
+				
+				socket.emit('sendMessage', {messagem: event.target[1].value})
+				event.target[1].value = "";
+			})
+
+			socket.on("getMessage", (msg) =>{
+				addToChat(msg)
+			})
+
+			socket.on("message", (msgs) =>{
+				for(msg of msgs){
+					addToChat(msg)
+				}
+			})
+
+		}
+
+	</script>
 </body>
 </html>

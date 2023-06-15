@@ -11,6 +11,7 @@
 
 from flask import Flask, flash, render_template, request, redirect, url_for, session
 from flask_login import login_user, logout_user, login_required
+from flask_socketio import SocketIO, emit, send, join_room
 from app.models import *
 from app import app, models, funcs
 from authlib.integrations.flask_client import OAuth
@@ -25,7 +26,7 @@ from apiclient.discovery import build
 
 # Flask socket ( chat )
 
-
+io = SocketIO(app)
 
 # Chaves para Google
 
@@ -39,7 +40,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly openid',
 API_SERVICE_NAME = 'drive'
 API_VERSION = 'v2'
 
-
+messages = []
 
 # Credenciais, conexao com o json 
 
@@ -710,6 +711,7 @@ def grupos():
 def ver_grupos(id):
     gru = grupo.query.filter_by(id=id).first()
     mensagens = []
+    session["id"] = id
     
     if gru is None:
 
@@ -727,6 +729,25 @@ def ver_grupos(id):
     
     return render_template("comunidade.html", grupo=gru_nome,
                            gru_desc = gru_cont, mensagens=mensagens, id=id)
+
+
+
+@io.on("sendMessage")
+def send_message_handler(msg):
+    messages.append(msg)
+    emit("getMessage", msg, broadcast=True)
+
+
+@io.on("message")
+def message_handler(msg):
+    send(messages)
+
+'''
+
+@io.on("connect")
+def connect():
+    join_room(session["id"])
+'''
 
 @app.route("/grupos/novo", methods=["GET", "POST"])
 @login_required
@@ -755,4 +776,4 @@ def create_grupos():
 # app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5007)
+    io.run(debug=True)

@@ -4,6 +4,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from authlib.integrations.flask_client import OAuth
+from flask_socketio import SocketIO, emit, send
 
 '''
 	
@@ -24,6 +25,7 @@ app.config["SECRET_KEY"] = "wZc3w7Am3hPMaFp3jqrhxASdRBHcydpEHiKaAp7xgtp"
 
 login = LoginManager(app)
 db = SQLAlchemy(app)
+io = SocketIO(app)
 oauth = OAuth(app)
 
 # login e signup

@@ -248,6 +248,7 @@
 				</div>
 				
 			</div>
+			<div class="chats"></div>
 			<div class="chat">
 				<div class="chat_window">
 					<div id="messages">
@@ -255,29 +256,30 @@
 
 							<!-- Aqui começa o for -->
 
-							{% for i in mensagens %}
+							<!--{% for i in mensagens %}-->
 
 					    	<div class="message_template">
 					    		<div class="text_wrapper">
 					        		<div class="text">
-					     				<p>{{ i }}</p>
+					     				
 					        		</div>
 					    		</div>			    
 							</div>
 
-							{% endfor %}
+							<!--{% endfor %}-->
 					    </ul>
 					</div>
 				</div>
 			</div>
+			<!--method="POST" action="{{ url_for('ver_grupos', id=id) }}"-->
 			<div class="bottom_wrapper clearfix">
-				<form method="POST" action="{{ url_for('ver_grupos', id=id) }}">
+				<form>
 					<div class="message_input_wrapper">
 				    	<input class="message_input" name="mensagem" maxlength="200" placeholder="Escreva sua mensagem aqui..." />
 					</div>
 					<div class="send_message">
 						<div class="text_wrapper">
-							<button class="btn btn-primary">Enviar</button>
+							<button class="btn btn-primary" type="submit">Enviar</button>
 						</div>
 					</div>
 				</form>
@@ -294,7 +296,7 @@
 			function addToChat(msg){
 				const p = document.createElement("p");
 				const chat = document.querySelector(".message_template");
-				p.innerHTML = `<p> ${msg.messagem}`
+				p.innerHTML = `<p>${msg.message}</p>`;
 				chat.append(p);
 			}
 
@@ -305,7 +307,7 @@
 			document.querySelector("form").addEventListener("submit", function(event){
 				event.preventDefault();
 				
-				socket.emit('sendMessage', {messagem: event.target[1].value})
+				socket.emit('sendMessage', {message: event.target[1].value})
 				event.target[1].value = "";
 			})
 

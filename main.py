@@ -21,10 +21,6 @@ import googleapiclient.discovery
 from apiclient.discovery import build
 
 
-# Lista de mensagens
-
-messages = []
-
 
 # Chaves para Google
 
@@ -721,36 +717,53 @@ def ver_grupos(id):
         gru_nome = gru.titulo
         gru_cont = gru.conteudo
 
-        '''
-
-        if request.method == "POST":
-
-            mensagem = request.form["mensagem"]
-
-            mensagens.append(mensagem)
-        '''
     return render_template("comunidade.html", grupo=gru_nome,
                            gru_desc = gru_cont, mensagens=mensagens, id=id)
 
 
 
-@io.on("sendMessage")
-def send_message_handler(msg):
-    messages.append(msg)
-    emit("getMessage", msg, broadcast=True)
+@io.on('join')
+def handle_join(data):
+
+    id = data['id']
+    join_room(id)
+
+    gru = grupo.query.filter_by(id=id).first()
+
+    ms = mensagem.query.filter_by(grupo=gru.titulo).with_entities(mensagem.conteudo).all()
+
+    for i in ms:
+        socketio.emit('message', i[0], id=request.sid)
+
+    
+
+@io.on('leave')
+def handle_leave(data):
+
+    id = data['id']
+    leave_room(id)
+
+@io.on('message')
+def handle_message(data):
+
+    id = data['id']
+    message = data['message']
+
+    
+    gru = grupo.query.filter_by(id=id).first()
+
+    nome = session["nome"]
+
+    ms = mensagem(grupo=gru.titulo, conteudo=message, nome=nome)
+        
+                  
+       
+    db.session.add(ms)
+    db.session.commit()
+    
+    socketio.emit('message', message, id=id)
 
 
-@io.on("message")
-def message_handler(msg):
-    send(messages)
-
-'''
-
-@io.on("connect")
-def connect():
-    join_room(session["id"])
-
-'''
 
 @app.route("/grupos/novo", methods=["GET", "POST"])
 @login_required

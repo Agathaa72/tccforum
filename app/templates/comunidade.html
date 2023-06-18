@@ -208,7 +208,8 @@
 	}
 
 </style>
-
+<script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
 <body>
 	<nav class="navbar navbar-expand-lg">
 	  <div class="container-fluid">
@@ -229,8 +230,8 @@
 	        </li>
 	      </ul>
 	      <form class="d-flex" role="search" method="POST"  action="{{url_for('index')}}">
-	        <input class="form-control me-2" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
-	        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
+	        <input class="form-control me-2" name="pesquisa" type="search" placeholder="Pesquise alguma coisa..." aria-label="Search">
+	        <button class="btn btn-outline-success" type="submit" name="search" value="Pesquisar">Pesquisar</button>
 	      </form>
 	    </div>
 	  </div>
@@ -254,74 +255,43 @@
 					<div id="messages">
 						<ul class="messages">
 
-							<!-- Aqui começa o for -->
-
-							<!--{% for i in mensagens %}-->
-
-					    	<div class="message_template">
-					    		<div class="text_wrapper">
-					        		<div class="text">
-					     				
-					        		</div>
-					    		</div>			    
-							</div>
-
-							<!--{% endfor %}-->
+							
 					    </ul>
 					</div>
 				</div>
 			</div>
-			<!--method="POST" action="{{ url_for('ver_grupos', id=id) }}"-->
 			<div class="bottom_wrapper clearfix">
-				<form>
+				
 					<div class="message_input_wrapper">
-				    	<input class="message_input" name="mensagem" maxlength="200" placeholder="Escreva sua mensagem aqui..." />
+				    	<input class="message_input" id="message" maxlength="200" placeholder="Escreva sua mensagem aqui..." />
 					</div>
 					<div class="send_message">
 						<div class="text_wrapper">
-							<button class="btn btn-primary" type="submit">Enviar</button>
+							<button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
 						</div>
 					</div>
-				</form>
+			
 			</div>
 		</div>
 
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
 	<script>
-		window.onload = function(){
+		var socket = io.connect('http://127.0.0.1:5000/{{ id }}');
+		var id = '{{ id }}';  // Obtém o ID da sala do template
 
-			const socket = io('http://127.0.0.1:5000/grupos/{{ id }}');
+        socket.on('connect', function() {
+            socket.emit('join', { id: id });
+        });
 
-			function addToChat(msg){
-				const p = document.createElement("p");
-				const chat = document.querySelector(".message_template");
-				p.innerHTML = `<p>${msg.message}</p>`;
-				chat.append(p);
-			}
+        socket.on('message', function(message) {
+            $('#messages').append('<div class="message_template" id="messages">' + '<div class="text_wrapper">' + '<div class="text">' + '<p>' + message + '</p>' + '</div>' + '</div>' + '</div>'); 
+        });
 
-			socket.on("connect", () => {
-				socket.send("User conectado ao chat.")
-			});
-
-			document.querySelector("form").addEventListener("submit", function(event){
-				event.preventDefault();
-				
-				socket.emit('sendMessage', {message: event.target[1].value})
-				event.target[1].value = "";
-			})
-
-			socket.on("getMessage", (msg) =>{
-				addToChat(msg)
-			})
-
-			socket.on("message", (msgs) =>{
-				for(msg of msgs){
-					addToChat(msg)
-				}
-			})
-
-		}
+        function sendMessage() {
+            var message = $('#message').val();
+            console.log(socket.emit('message', { id: id, message: message }));
+            $('#message').val('');
+        }
 
 	</script>
 </body>

@@ -65,26 +65,3 @@ class curso(db.Model):
         self.nome = nome
         self.materia = materia
 
-class grupo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(200))
-    conteudo = db.Column(db.Text)
-    nome = db.Column(db.String(50))
-    materia = db.Column(db.String(40))
-
-    def __init__(self, titulo, conteudo, nome, materia):
-        self.titulo = titulo
-        self.conteudo = conteudo
-        self.nome = nome
-        self.materia = materia
-
-class mensagem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    grupo = db.Column(db.String(200))
-    conteudo = db.Column(db.String(200))
-    nome = db.Column(db.String(50))
-
-    def __init__(self, grupo, conteudo, nome):
-        self.grupo = grupo
-        self.conteudo = conteudo
-        self.nome = nome
